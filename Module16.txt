@@ -1,0 +1,20 @@
+Module: Module16
+
+
+
+Sub TEST_Button_Click()
+    Debug.Print "TEST"
+    MsgBox "TEST_Button_Click" & vbCrLf & " " & vbCrLf & BNAME_SHUKEI & vbCrLf & " " & vbCrLf & " ", vbInformation
+   
+    
+End Sub
+
+
+
+
+
+
+
+
+
+
