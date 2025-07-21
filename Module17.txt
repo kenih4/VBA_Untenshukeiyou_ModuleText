@@ -27,6 +27,7 @@ Function CheckServerAccess_FSO(ByVal fullNetworkFilePath As String) As Boolean
     
     If fso.FileExists(fullNetworkFilePath) Then
         CheckServerAccess_FSO = True ' アクセス成功
+        ThisWorkbook.sheetS("手順").Range("B2").Value = "Connect"
         Debug.Print "アクセス成功==="
     End If
     
@@ -56,9 +57,11 @@ Sub MonitorFileAccess()
         If currentAccessStatus <> previousAccessStatus Then
             If currentAccessStatus = False Then
                 ' アクセス可能だった状態からアクセス不可になった場合
+                ThisWorkbook.sheetS("手順").Range("B2").Value = "Not Connect"
                 MsgBox "接続が切れた可能性があります: ファイル「" & TARGET_FILE_PATH & "」にアクセスできません。", vbCritical + vbOKOnly, "サーバーファイルアクセス警告"
             Else
                 ' アクセス不可だった状態からアクセス可能になった場合
+                ThisWorkbook.sheetS("手順").Range("B2").Value = "Connect"
                 ' MsgBox "通知: ファイル「" & TARGET_FILE_PATH & "」へのアクセスが回復しました。", vbInformation + vbOKOnly, "サーバーファイルアクセス回復"
             End If
         End If

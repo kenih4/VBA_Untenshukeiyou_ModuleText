@@ -304,7 +304,7 @@ Sub GetWorkbookFolderToCell()
 '    MsgBox folderPath
     
     If folderPath <> "" Then
-        ThisWorkbook.sheetS("è‡").Range("A1").Value = folderPath
+        ThisWorkbook.sheetS("è‡").Range("B1").Value = folderPath
         
 '        MsgBox folderPath
         If folderPath = "C:\me\unten" Then
