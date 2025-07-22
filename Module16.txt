@@ -1,13 +1,18 @@
 Module: Module16
-
+Option Explicit ' ñ¢íËã`ÇÃïœêîÇÕégópÇ≈Ç´Ç»Ç¢ÇÊÇ§Ç…
 
 
 Sub TEST_Button_Click()
     Debug.Print "TEST"
-    MsgBox "TEST_Button_Click" & vbCrLf & " " & vbCrLf & BNAME_SHUKEI & vbCrLf & " " & vbCrLf & " ", vbInformation
+    MsgBox "TEST_Button_Click" & vbCrLf & " " & vbCrLf & "test" & vbCrLf & " " & vbCrLf & " ", vbInformation
    
     
+
+
 End Sub
+
+
+
 
 
 

@@ -2,16 +2,16 @@ Module: Module8
 Option Explicit ' 未定義の変数は使用できないように
 Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
-
-
 Public Const UNITROW As Integer = 18
-Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転集計記録.xlsm"
-Public Const BNAME_KEIKAKU As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\計画時間.xlsx"
+Public Const CPATH As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\"
+Public Const WHICH As String = "SACLA"
+Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運転集計記録.xlsm"
+Public Const BNAME_KEIKAKU As String = CPATH & "計画時間.xlsx"
 Public Const BNAME_SOURCE As String = "C:\me\unten\マクロいろいろ.xlsm"
 Public Const OperationSummaryDir As String = "C:\me\unten\OperationSummary"
-Public Const BNAME_MATOME As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計まとめ.xlsm"
-'Public Const BNAME_MATOME As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計まとめTEST.xlsm"
+Public Const BNAME_MATOME As String = CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm"
 
+Public Const edgePath As String = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
 
 'ブックを開く ==============================================================================================================================
@@ -463,5 +463,29 @@ Sub ExportModulesToSeparateTextFiles()
         
 End Sub
 
+
+
+
+
+'=== フルパスで書かれたファイル名の拡張子だけを取り除きたい ================================
+Function RemoveFileExtension(fullPath As String) As String
+    Dim fileName As String
+    Dim dotPosition As Long
+    
+    ' フルパスからファイル名を取得
+    'fileName = Dir(fullPath)
+    fileName = fullPath
+    
+    ' 最後のドットの位置を取得
+    dotPosition = InStrRev(fileName, ".")
+    
+    ' ドットが見つかった場合、拡張子を取り除く
+    If dotPosition > 0 Then
+        RemoveFileExtension = Left(fileName, dotPosition - 1)
+    Else
+        ' ドットが見つからない場合は、元のファイル名を返す
+        RemoveFileExtension = fileName
+    End If
+End Function
 
 

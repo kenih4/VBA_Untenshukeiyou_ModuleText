@@ -101,3 +101,43 @@ End Sub
 
 
 
+' ========================================================================================================================
+Sub PDF_output_Click()
+    Debug.Print "PDF_output_Click"
+   
+    Dim myArray(2) As Variant
+    Dim i As Integer
+    Dim pdfPath As String
+
+    Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
+    Set wb_MATOME = OpenBook(BNAME_MATOME, False) ' フルパスを指定
+    If wb_MATOME Is Nothing Then Call Fin("ブックが開けませんでした。パスの異なる同じ名前のブックが既に開かれてる可能性があります。", 3)
+        
+    Dim sheet As Worksheet
+    myArray(0) = "まとめ " 'シート名　まとめ シートには半角スペースがあるので注意
+    myArray(1) = "Fault集計"
+    myArray(2) = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+    
+    For i = LBound(myArray) To UBound(myArray)
+'        MsgBox "要素 " & i & ": " & myArray(i)
+        Set sheet = wb_MATOME.Worksheets(myArray(i))
+'       sheet.PrintPreview
+        pdfPath = CPATH & WHICH & "\" & WHICH & "運転状況集計(" & myArray(i) & ")_TEST.pdf" '
+        Debug.Print "pdfPath:   " & pdfPath
+        ' シートをPDFとしてエクスポート
+        sheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfPath, Quality:=xlQualityStandard, _
+                              IncludeDocProperties:=True, IgnorePrintAreas:=False, _
+                              OpenAfterPublish:=False
+                              '  IgnorePrintAreas: Falseの場合、設定された印刷エリアのみがPDFにエクスポートされます。
+    Next i
+    
+    ' PDFを開く
+    For i = LBound(myArray) To UBound(myArray)
+        pdfPath = CPATH & WHICH & "\" & WHICH & "運転状況集計(" & myArray(i) & ")_TEST.pdf" '
+        shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
+    Next i
+
+End Sub
+
+
+
