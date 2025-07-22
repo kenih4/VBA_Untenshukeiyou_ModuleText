@@ -108,6 +108,8 @@ Sub PDF_output_Click()
     Dim myArray(2) As Variant
     Dim i As Integer
     Dim pdfPath As String
+    Dim OutDir As String
+    OutDir = "PDF作成"
 
     Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb_MATOME = OpenBook(BNAME_MATOME, False) ' フルパスを指定
@@ -122,7 +124,7 @@ Sub PDF_output_Click()
 '        MsgBox "要素 " & i & ": " & myArray(i)
         Set sheet = wb_MATOME.Worksheets(myArray(i))
 '       sheet.PrintPreview
-        pdfPath = CPATH & WHICH & "\" & WHICH & "運転状況集計(" & myArray(i) & ")_TEST.pdf" '
+        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
         Debug.Print "pdfPath:   " & pdfPath
         ' シートをPDFとしてエクスポート
         sheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfPath, Quality:=xlQualityStandard, _
@@ -133,7 +135,7 @@ Sub PDF_output_Click()
     
     ' PDFを開く
     For i = LBound(myArray) To UBound(myArray)
-        pdfPath = CPATH & WHICH & "\" & WHICH & "運転状況集計(" & myArray(i) & ")_TEST.pdf" '
+        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
         shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
     Next i
 

@@ -431,9 +431,10 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     Dim LineSto As Integer
     Dim Retsu_end As Integer
     Dim Retsu_start As Integer
+    Dim Retsu_chouseizikan As Integer
+    Dim Retsu_total As Integer
     Dim result As Boolean
     Dim wb_name As String
-'    Dim sname As String
 
     Select Case BL
     Case "SCSS"
@@ -448,9 +449,10 @@ Sub 運転集計記録_Check(BL As String, sname As String)
 
     MsgBox "マクロ「運転集計記録_Check」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & wb_name & vbCrLf & "のチェックです。" & vbCrLf & "確認します", vbInformation, "BL" & BL
 
-'    sname = "停止時間"
     Retsu_end = 2
     Retsu_start = 3
+    Retsu_chouseizikan = 4
+    Retsu_total = 5
 
     Dim wb As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb = OpenBook(wb_name, True)    ' フルパスを指定
@@ -478,20 +480,35 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Cells(i, Retsu_end).Interior.Color = RGB(0, 205, 0)
         Cells(i, Retsu_start).Interior.Color = RGB(0, 205, 0)
-                
+        Cells(i, Retsu_total).Interior.Color = RGB(0, 205, 0)
+        
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_end)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 2))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, Retsu_end))
         End If
 
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_start)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 3))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, Retsu_start))
         End If
                 
         
         If (Cells(i, Retsu_start).Value - Cells(i, Retsu_end).Value) <= 0 Then
-            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", 3, Cells(i, 3))
+            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", 3, Cells(i, Retsu_start))
         End If
-               
+        
+        If sname = "停止時間" Then
+            If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' ユニット開始時刻より新しいところだけ確認
+                If Cells(i, Retsu_chouseizikan) <> "" Then
+                    Call CMsg("列(調整時間)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", 2, Cells(i, Retsu_chouseizikan))
+                End If
+            End If
+        End If
+        
+        result = CheckSameFormulaType(Cells(LineSta, Retsu_total), Cells(i, Retsu_total))
+        If result = False Then
+            Debug.Print "要確認！　セル(" & i & ", " & Retsu_total & ") 数式が入っていないか、数式が異なる"
+            Call CMsg("数式が入っていないか、数式が異なる！" & vbCrLf & "~~~", 3, Cells(i, Retsu_total))
+        End If
+                           
         'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
     Next
         
@@ -524,6 +541,7 @@ Function IsDateTimeFormatRegEx(ByVal targetString As String) As Boolean
     Dim regEx As Object
     Set regEx = CreateObject("VBScript.RegExp") ' または New RegExp
 
+    
     With regEx
         .pattern = "^\d{4}/(0?[1-9]|1[0-2])/(0?[1-9]|[12]\d|3[01])\s([01]?\d|2[0-3]):([0-5]?\d):([0-5]?\d)$"
         .IgnoreCase = False ' 大文字・小文字を区別しない場合はTrue
