@@ -430,7 +430,7 @@ Sub ExportModulesToSeparateTextFiles()
             
             ' モジュール名に基づいてファイル名を作成
             Dim moduleFileName As String
-            moduleFileName = filePath & vbComp.Name & ".txt"
+            moduleFileName = filePath & vbComp.Name & ".vba"
             
             ' 新しいテキストファイルを作成
             fileNum = FreeFile
