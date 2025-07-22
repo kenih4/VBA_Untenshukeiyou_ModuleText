@@ -449,7 +449,7 @@ Sub ExportModulesToSeparateTextFiles()
     Next vbComp
     
     
-    If MsgBox("すべてのモジュールがテキストファイルにエクスポートされました。" & vbCrLf & "vscodeを開きますか？" & vbCrLf & "git add -A" & vbCrLf & "git commit -m comment", vbYesNo + vbQuestion, "確認") = vbNo Then
+    If MsgBox("すべてのモジュールがテキストにエクスポートされました。" & vbCrLf & filePath & vbCrLf & "vscodeを開きますか？" & vbCrLf & "git add -A" & vbCrLf & "git commit -m comment", vbYesNo + vbQuestion, "確認") = vbNo Then
         MsgBox "No"
     Else
         Dim vscodePath As String
