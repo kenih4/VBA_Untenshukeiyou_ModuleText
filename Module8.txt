@@ -414,7 +414,8 @@ Sub ExportModulesToSeparateTextFiles()
     Dim moduleContent As String
     
     ' 出力ファイルのパスを指定（同じフォルダに保存）
-    filePath = ThisWorkbook.path & "\"
+'    filePath = ThisWorkbook.path & "\"
+    filePath = "C:\Users\kenic\Dropbox\gitdir\VBA_Untenshukeiyou_ModuleText\"
     
     ' 各モジュールをループして内容を取得
     For Each vbComp In ThisWorkbook.VBProject.VBComponents
@@ -447,7 +448,19 @@ Sub ExportModulesToSeparateTextFiles()
         End If
     Next vbComp
     
-    MsgBox "すべてのモジュールがテキストファイルにエクスポートされました。"
+    
+    If MsgBox("すべてのモジュールがテキストファイルにエクスポートされました。" & vbCrLf & "vscodeを開きますか？" & vbCrLf & "git add -A" & vbCrLf & "git commit -m comment", vbYesNo + vbQuestion, "確認") = vbNo Then
+        MsgBox "No"
+    Else
+        Dim vscodePath As String
+        Dim folderPath As String
+        Dim command As String
+        vscodePath = "C:\Users\kenic\AppData\Local\Programs\Microsoft VS Code\Code.exe"
+        folderPath = "C:\Users\kenic\Dropbox\gitdir\VBA_Untenshukeiyou_ModuleText"
+        command = """" & vscodePath & """ """ & folderPath & """"
+        shell command, vbNormalFocus
+    End If
+        
 End Sub
 
 
