@@ -157,21 +157,9 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     
     sheet.DisplayPageBreaks = True
    
-    If MsgBox("終了。PDF出力しますか？", vbYesNo + vbQuestion, "確認") = vbYes Then
+'    If MsgBox("プレビュー表示しますか？", vbYesNo + vbQuestion, "確認") = vbYes Then
 '        sheet.PrintPreview
-        Dim pdfPath As String
-'        pdfPath = CPATH & WHICH & "\test\" & sheet.Name & ".pdf" ' 出力先のパスを指定
-        pdfPath = CPATH & WHICH & "\" & WHICH & "運転状況集計(" & sheet.Name & ")_TESTESTTEST.pdf" '
-'        MsgBox RemoveFileExtension(BNAME_MATOME)
-'        pdfPath = RemoveFileExtension(BNAME_MATOME) & "(" & sheet.Name & ")_TESTTESTTEST.pdf" ' このやり方だとこんな風になってしまう　\\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計まとめ(まとめ ).pdf
-        Debug.Print "pdfPath:   " & pdfPath
-        
-        ' シートをPDFとしてエクスポート
-        sheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfPath, Quality:=xlQualityStandard, _
-                              IncludeDocProperties:=True, IgnorePrintAreas:=False, _
-                              OpenAfterPublish:=True
-                              '  IgnorePrintAreas: Falseの場合、設定された印刷エリアのみがPDFにエクスポートされます。
-    End If
+'    End If
     Call Fin("終了しました。シート「" & sheet.Name & "」" & vbCrLf & "の適切な所に貝いれました", 1)
     Debug.Print "Fin================================================================================================================="
     

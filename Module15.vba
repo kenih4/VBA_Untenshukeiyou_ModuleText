@@ -136,6 +136,13 @@ End Sub
 
 
 
+Sub 運転状況集計まとめの追編集_BL2_Click()
+    Call 運転状況集計まとめの追編集(2)
+End Sub
+
+Sub 運転状況集計まとめの追編集_BL3_Click()
+    Call 運転状況集計まとめの追編集(3)
+End Sub
 
 Sub check_Final_Check_BL2_Click()
     Call Final_Check(2)

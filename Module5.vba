@@ -316,14 +316,14 @@ Sub Final_Check(BL As Integer)
                     If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
     
-                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then '波長
-                            Call CMsg("セルには「+」が含まれています。", 2, tc)
-                            If MsgBox("備考セルに、「、二色実験」と追い書き込みますか？" & vbCrLf & "いいです？", vbYesNo + vbQuestion, "確認") = vbYes Then
-                    '            MsgBox j & "  Cells(j, 7).Value:     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value, Buttons:=vbInformation
-                                wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value + "、二色実験"
-                    '            MsgBox "追い書き込みした。     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value & vbCrLf & "次に進みます。", Buttons:=vbInformation
-                            End If
-                        End If
+'                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then
+'                            Call CMsg("セルには「+」が含まれています。", 2, tc)
+'                            If MsgBox("備考セルに、「、二色実験」と追い書き込みますか？" & vbCrLf & "いいです？", vbYesNo + vbQuestion, "確認") = vbYes Then
+'                    '            MsgBox j & "  Cells(j, 7).Value:     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value, Buttons:=vbInformation
+'                                wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value + "、二色実験"
+'                    '            MsgBox "追い書き込みした。     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value & vbCrLf & "次に進みます。", Buttons:=vbInformation
+'                            End If
+'                        End If
 
                     End If
 
@@ -373,6 +373,101 @@ End Sub
 
 
 
+
+
+
+
+Sub 運転状況集計まとめの追編集(BL As Integer)
+
+    On Error GoTo ErrorHandler
+
+    Dim tc As Variant
+    Dim i, j As Integer
+    Dim col As Variant
+    Dim BNAME_SHUKEI As String
+    Dim DOWNTIME_ROW As Integer
+    Dim UNIT As String
+    Dim LineSta As Integer
+    Dim LineSto As Integer
+    Dim Check_col_arr As Variant
+    Dim result As Boolean
+    Dim pattern As String
+
+    MsgBox "マクロ「運転状況集計まとめの追編集( BL " & BL & " )」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_MATOME & vbCrLf & "に追加修正します。" & vbCrLf & "二色実験の追記など", vbInformation, "BL" & BL
+
+
+    Select Case BL
+    Case 1
+        Debug.Print "SCSS+"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SCSS\SCSS運転状況集計BL1.xlsm"
+    Case 2
+        Debug.Print "BL2"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
+        DOWNTIME_ROW = 8
+    Case 3
+        Debug.Print ">>>BL3"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
+        DOWNTIME_ROW = 9
+    Case Else
+        Debug.Print "Zzz..."
+        End
+    End Select
+
+    UNIT = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+
+    ' wb_MATOMEを開く
+    Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
+    Set wb_MATOME = OpenBook(BNAME_MATOME, False)    ' フルパスを指定
+    If wb_MATOME Is Nothing Then Call Fin("ブックが開けませんでした。パスの異なる同じ名前のブックが既に開かれてる可能性があります。", 3)
+    Application.WindowState = xlMaximized
+
+    wb_MATOME.Worksheets("まとめ ").Activate    'これ大事======================================================================================
+
+    MsgBox "まとめシートの(c)のチェック。" & vbCrLf & "", vbInformation, "BL" & BL
+    If BL = 2 Then
+        LineSta = getLineNum("(c-1)BL2", 2, wb_MATOME.Worksheets("まとめ "))
+        LineSto = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
+    Else
+        LineSta = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
+        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).ROW
+    End If
+
+
+    For i = LineSta To LineSto
+        Debug.Print "DEBUG D    i = " & i & "  " & Cells(i, 2).Value
+
+        If wb_MATOME.Worksheets("まとめ ").Cells(i, 2).Value = UNIT Then
+            Debug.Print "この行　i = " & i & " が、ユニット " & Cells(i, 2).Value
+            CantFindUnit = CantFindUnit + 1
+            For j = i To i + wb_MATOME.Worksheets("まとめ ").Cells(i, 2).MergeArea.Rows.Count - 1
+                For col = 3 To 7
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, col)
+                    tc.Select
+
+                    If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
+    
+                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then
+                            MsgBox "セルには「+」が含まれています。"
+                            If MsgBox("備考セルに、「、二色実験」と追い書き込みますか？" & vbCrLf & "いいです？", vbYesNo + vbQuestion, "確認") = vbYes Then
+                    '            MsgBox j & "  Cells(j, 7).Value:     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value, Buttons:=vbInformation
+                                wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value + "、二色実験"
+                    '            MsgBox "追い書き込みした。     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value & vbCrLf & "次に進みます。", Buttons:=vbInformation
+                            End If
+                        End If
+
+                    End If
+                Next
+            Next
+            Exit For
+        End If
+    Next
+
+    Call Fin("終了しました。" & vbCrLf & "", 1)
+    Exit Sub    ' 通常の処理が完了したらエラーハンドラをスキップ
+ErrorHandler:
+    MsgBox "エラーです。内容は　 " & Err.Description, Buttons:=vbCritical
+
+End Sub
 
 
 
