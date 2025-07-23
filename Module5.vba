@@ -123,7 +123,7 @@ Sub Final_Check(BL As Integer)
                         If col = 5 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
                             Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
                         End If
-
+    
                         If col = 6 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
                             Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
                         End If
@@ -255,7 +255,7 @@ Sub Final_Check(BL As Integer)
                         If col = 5 Or col = 7 Or col = 8 Then
                             result = CheckTimeFormat(tc)
                         End If
-
+    
                         If (col = 5 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total") And (tc.Value <= 0 Or tc.Value > 0.5 Or Not IsNumeric(tc.Value)) Then
                             Call CMsg("範囲外かもしれないです。確認した方がいいです。", 3, tc)
                         End If
@@ -312,9 +312,19 @@ Sub Final_Check(BL As Integer)
                     If col = 4 And (tc.Value <= 0 Or tc.Value > 60 Or Not IsNumeric(tc.Value)) Then  '繰返し
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
                     End If
-
+    
                     If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+    
+                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then '波長
+                            Call CMsg("セルには「+」が含まれています。", 2, tc)
+                            If MsgBox("備考セルに、「、二色実験」と追い書き込みますか？" & vbCrLf & "いいです？", vbYesNo + vbQuestion, "確認") = vbYes Then
+                    '            MsgBox j & "  Cells(j, 7).Value:     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value, Buttons:=vbInformation
+                                wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value + "、二色実験"
+                    '            MsgBox "追い書き込みした。     " & wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value & vbCrLf & "次に進みます。", Buttons:=vbInformation
+                            End If
+                        End If
+
                     End If
 
                     If col = 6 And (tc.Value <= 0 Or tc.Value > 2000 Or Not IsNumeric(tc.Value)) Then  '強度
