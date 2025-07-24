@@ -120,8 +120,7 @@ Sub Middle_Check(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SCSS\SCSS運転状況集計BL1.xlsm"
     Case 2
         Debug.Print "BL2"
-'        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
-        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2TEST.xlsm"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
     Case 3
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
@@ -145,6 +144,7 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
 
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
+'    CheckForErrors (ws)
     LineSta = 9
 '    LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
     LineSto = GetLastDataRow(ws, "B")
@@ -153,19 +153,6 @@ Sub Middle_Check(BL As Integer)
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Rows(i).Select
         
-'        If Not IsDateTimeFormatRegEx(Cells(i, "C")) Then
-'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "C"))
-'        End If
-'        If Not IsDateTimeFormatRegEx(Cells(i, "D")) Then
-'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "D"))
-'        End If
-'        If Not IsDateTimeFormatRegEx(Cells(i, "E")) Then
-'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "E"))
-'        End If
-'        If Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
-'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "F"))
-'        End If
-    
         If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Or Not IsDateTimeFormatRegEx(Cells(i, "E")) Or Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
             Rows(i).Interior.Color = RGB(255, 0, 0)
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "C"))
@@ -179,10 +166,44 @@ Sub Middle_Check(BL As Integer)
                 Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "D").Value & vbCrLf & ws.Cells(i, "F").Value, 3, Cells(i, "F"))
             End If
         End If
+        
+        If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "G").Value Then ' 「合計時間」の確認
+            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G:" & ws.Cells(i, "G").Value, 3, Cells(i, "G"))
+        End If
+        
+        If ws.Cells(i, "H").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "H").Value < 0 Then ' 「利用時間」の確認
+            Call CMsg("「利用時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "H"))
+        End If
+        
+        If ws.Cells(i, "I").Value > 100 Or ws.Cells(i, "I").Value < 0 Then  ' 「利用率」の確認
+            Call CMsg("「利用率」が  0 ~ 100%の範囲でない   " & vbCrLf & "====", 3, Cells(i, "I"))
+        End If
+        
+        If ws.Cells(i, "J").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "J").Value < 0 Then ' 「調整時間」の確認
+            Call CMsg("「調整時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "J"))
+        End If
+        
+        If ws.Cells(i, "K").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "K").Value < 0 Then ' 「Fault時間」の確認
+            Call CMsg("「Fault時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "K"))
+        End If
+        
+        If ws.Cells(i, "L").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "L").Value < 0 Then ' 「ダウンタイム」の確認
+            Call CMsg("「ダウンタイム」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "L"))
+        End If
+        
+        If ws.Cells(i, "M").Value < 0 Then  ' 「Fault合計」の確認
+            Call CMsg("「Fault合計」が  負" & vbCrLf & "====", 3, Cells(i, "M"))
+        End If
+            
+        If ws.Cells(i, "N").Value >= 1 Then ' 「Fault間隔」の確認   時刻ならシリアル値で1未満
+            Call CMsg("「Fault間隔」のフォーマットが 時間でないです" & vbCrLf & "====", 3, Cells(i, "N"))
+        End If
     
+        If IsNumeric(ws.Cells(i, "O").Value) Then  ' 「ユーザー」の確認
+            Call CMsg("「ユーザー」が数値ですけど、、、" & vbCrLf & "====", 2, Cells(i, "O"))
+        End If
+        
     Next
-    
-
 
     Call Fin("終了しました。" & vbCrLf & "", 1)
     Exit Sub ' 通常の処理が完了したらエラーハンドラをスキップ
