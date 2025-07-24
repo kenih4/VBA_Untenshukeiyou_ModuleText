@@ -100,6 +100,107 @@ End Sub
 
 
 
+
+Sub Middle_Check(BL As Integer)
+
+    On Error GoTo ErrorHandler
+
+    Dim BNAME_SHUKEI As String
+    Dim sname As String
+    Dim Cnt As Integer
+    Dim result As Boolean
+    Dim i As Integer
+    Dim LineSta As Integer
+    Dim LineSto As Integer
+    Dim ws As Worksheet
+
+    Select Case BL
+    Case 1
+        Debug.Print "SCSS+"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SCSS\SCSS運転状況集計BL1.xlsm"
+    Case 2
+        Debug.Print "BL2"
+'        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2TEST.xlsm"
+    Case 3
+        Debug.Print ">>>BL3"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
+    Case Else
+        Debug.Print "Zzz..."
+        End
+    End Select
+
+    MsgBox "マクロ「Middle_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_SHUKEI & vbCrLf & "の中間チェックです。" & vbCrLf & "ユーザー運転の開始終了時刻などの確認します", vbInformation, "BL" & BL
+
+    ' wb_SHUKEIを開く
+    Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
+    Set wb_SHUKEI = OpenBook(BNAME_SHUKEI, True)    ' フルパスを指定
+    If wb_SHUKEI Is Nothing Then Call Fin("ブックが開けませんでした。パスの異なる同じ名前のブックが既に開かれてる可能性があります。", 3)
+    wb_SHUKEI.Activate
+    If ActiveWorkbook.Name <> wb_SHUKEI.Name Then
+        Call Fin("現在アクティブなブック名が異常です。終了します。" & vbCrLf & "ActiveWorkbook.Name:  " & ActiveWorkbook.Name & vbCrLf & "BNAME_SHUKEI:  " & BNAME_SHUKEI, 3)
+    End If
+    wb_SHUKEI.Windows(1).WindowState = xlMaximized
+    wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示
+    wb_SHUKEI.Worksheets("利用時間(User)").Activate
+
+    Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
+    LineSta = 9
+'    LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
+    LineSto = GetLastDataRow(ws, "B")
+    
+    For i = LineSta To LineSto
+'       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
+        Rows(i).Select
+        
+'        If Not IsDateTimeFormatRegEx(Cells(i, "C")) Then
+'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "C"))
+'        End If
+'        If Not IsDateTimeFormatRegEx(Cells(i, "D")) Then
+'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "D"))
+'        End If
+'        If Not IsDateTimeFormatRegEx(Cells(i, "E")) Then
+'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "E"))
+'        End If
+'        If Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
+'            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "F"))
+'        End If
+    
+        If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Or Not IsDateTimeFormatRegEx(Cells(i, "E")) Or Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
+            Rows(i).Interior.Color = RGB(255, 0, 0)
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "C"))
+        Else
+            Rows(i).Interior.Color = RGB(0, 205, 0)
+            If Not CheckCellsMatch(ws.Cells(i, "C"), ws.Cells(i, "E")) Then
+                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "C").Value & vbCrLf & ws.Cells(i, "E").Value, 3, Cells(i, "E"))
+            End If
+            
+            If Not CheckCellsMatch(ws.Cells(i, "D"), ws.Cells(i, "F")) Then
+                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "D").Value & vbCrLf & ws.Cells(i, "F").Value, 3, Cells(i, "F"))
+            End If
+        End If
+    
+    Next
+    
+
+
+    Call Fin("終了しました。" & vbCrLf & "", 1)
+    Exit Sub ' 通常の処理が完了したらエラーハンドラをスキップ
+ErrorHandler:
+    MsgBox "エラーです。内容は　 " & Err.Description, Buttons:=vbCritical
+    
+End Sub
+
+
+
+
+
+
+
+
+
+
+
 Function Check_exixt(sname As String, wb As Workbook) As Boolean
 
     Check_exixt = False

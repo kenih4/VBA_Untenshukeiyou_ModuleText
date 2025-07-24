@@ -489,3 +489,61 @@ Function RemoveFileExtension(fullPath As String) As String
 End Function
 
 
+
+
+
+'=== 値が入ってる最終行を取得したい。空白セルは無視、数式も無視して欲しい ================================
+'     最終行番号（例えば1048576行目）を返す可能性がある関数には、Long でないと オーバーフローの危険があります。
+Function GetLastDataRow(ws As Worksheet, colName As String) As Long
+    Dim i As Long
+    Dim lastRow As Long
+    Dim colNum As Long
+    colNum = ws.Range(colName & "1").Column
+    lastRow = ws.Cells(ws.Rows.Count, colNum).End(xlUp).ROW
+
+    For i = lastRow To 1 Step -1
+'        If ws.Cells(i, colNum).HasFormula Then
+            If ws.Cells(i, colNum) = "" Then
+                Debug.Print i & "   KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
+            Else
+                Debug.Print i & "   Not KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
+                GetLastDataRow = i ' 数式が入ってて、値が入ってる場合、ココだ
+                Exit Function
+            End If
+'        Else
+            'Debug.Print i & "   Not HasFormula  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
+'        End If
+    Next i
+
+    GetLastDataRow = 0 ' 該当セルが無い場合
+End Function
+
+
+
+
+
+'=== 2つのセルが一致するのかしないのか。日時の比較を行う際には、非常に小さい差を許容する方法が有効 ================================
+' 日付の値、セルA1には「45769.66667」、セルA2にも同じく「45769.66667」が入っているのですが、一致しません。疑問に思って、試しに、セルA2 の セルA1の差分をとったら、「-7.27695761418343E-12」となりました。
+Function CheckCellsMatch(cell1 As Range, cell2 As Range) As Boolean
+    Dim value1 As Double
+    Dim value2 As Double
+    Dim tolerance As Double
+
+    ' セルの値を取得
+    value1 = cell1.Value
+    value2 = cell2.Value
+    Debug.Print "value1:    " & value1 & "   value12:    " & value1
+
+    ' 許容誤差を設定
+    tolerance = 0.0000000001 ' 10の-10乗
+
+    ' 値の差を比較
+    If Abs(value1 - value2) < tolerance Then
+        CheckCellsMatch = True ' 一致している場合
+    Else
+        CheckCellsMatch = False ' 一致していない場合
+    End If
+End Function
+
+
+

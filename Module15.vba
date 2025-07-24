@@ -24,7 +24,13 @@ Sub check_Initial_Check_BL3_Click()
    Call Initial_Check(3)
 End Sub
 
+Sub Middle_Check_BL2_Click()
+   Call Middle_Check(2)
+End Sub
 
+Sub Middle_Check_BL3_Click()
+   Call Middle_Check(3)
+End Sub
 
 
 
