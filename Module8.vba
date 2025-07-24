@@ -447,7 +447,9 @@ Sub ExportModulesToSeparateTextFiles()
             Debug.Print "モジュール " & vbComp.Name & " は空です。"
         End If
     Next vbComp
+     
     
+    ThisWorkbook.SaveCopyAs "C:\Users\kenic\Dropbox\gitdir\VBA_Untenshukeiyou_ModuleText" & "\マクロいろいろ_" & Format(Date, "yyyymmdd") & ".xlsm"
     
     If MsgBox("すべてのモジュールがテキストにエクスポートされました。" & vbCrLf & filePath & vbCrLf & "vscodeを開きますか？" & vbCrLf & "git add -A" & vbCrLf & "git commit -m comment", vbYesNo + vbQuestion, "確認") = vbNo Then
         MsgBox "No"
