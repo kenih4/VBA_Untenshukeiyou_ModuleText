@@ -140,6 +140,18 @@ Sub Middle_Check(BL As Integer)
         Call Fin("現在アクティブなブック名が異常です。終了します。" & vbCrLf & "ActiveWorkbook.Name:  " & ActiveWorkbook.Name & vbCrLf & "BNAME_SHUKEI:  " & BNAME_SHUKEI, 3)
     End If
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
+    
+    
+    wb_SHUKEI.Worksheets("配列").Select    '最前面に表示
+    wb_SHUKEI.Worksheets("配列").Activate
+    If GetLastDataRow(wb_SHUKEI.Worksheets("集計記録"), "C") <> Cells(4, "E").Value Then
+        Call CMsg("シート「集計記録」の最終行と一致しません" & vbCrLf & "", 3, Cells(4, "E"))
+    Else
+        Call CMsg("一致、OK   " & vbCrLf, 1, Cells(4, "E"))
+    End If
+ 
+ 
+ 
     wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
 

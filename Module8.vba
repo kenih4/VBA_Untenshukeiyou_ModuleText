@@ -527,20 +527,12 @@ End Function
 '=== 2つのセルが一致するのかしないのか。日時の比較を行う際には、非常に小さい差を許容する方法が有効 ================================
 ' 日付の値、セルA1には「45769.66667」、セルA2にも同じく「45769.66667」が入っているのですが、一致しません。疑問に思って、試しに、セルA2 の セルA1の差分をとったら、「-7.27695761418343E-12」となりました。
 Function CheckCellsMatch(cell1 As Range, cell2 As Range) As Boolean
-    Dim value1 As Double
-    Dim value2 As Double
     Dim tolerance As Double
-
-    ' セルの値を取得
-    value1 = cell1.Value
-    value2 = cell2.Value
-    Debug.Print "value1:    " & value1 & "   value12:    " & value1
 
     ' 許容誤差を設定
     tolerance = 0.0000000001 ' 10の-10乗
 
-    ' 値の差を比較
-    If Abs(value1 - value2) < tolerance Then
+    If Abs(cell1.Value - cell2.Value) < tolerance Then
         CheckCellsMatch = True ' 一致している場合
     Else
         CheckCellsMatch = False ' 一致していない場合
