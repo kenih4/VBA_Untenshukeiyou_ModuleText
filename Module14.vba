@@ -162,12 +162,8 @@ Sub Middle_Check(BL As Integer)
         LineSta = 9
     End If
     LineSto = GetLastDataRow(ws, "B")
-    Range("C" & LineSta & ":C" & LineSto).Select
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("C" & LineSta & ":C" & LineSto))
-    Range("D" & LineSta & ":D" & LineSto).Select
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("D" & LineSta & ":D" & LineSto))
-    
-    
     
     
     wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示_______________________________________________________________________________
@@ -417,6 +413,8 @@ Sub 計画時間xlsx_Check(BL As Integer)
     LineSta = 2 ' getLineNum("運転種別", 1, wb_KEIKAKU.Worksheets("bl" & BL)) + 1
     LineSto = wb_KEIKAKU.Worksheets("bl" & BL).Cells(Rows.Count, "A").End(xlUp).ROW
     
+    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("B" & LineSta & ":B" & LineSto - 1))
+    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("C" & LineSta & ":C" & LineSto - 1))
     
     For i = LineSta To LineSto
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
@@ -537,10 +535,14 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
         LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "A").End(xlUp).ROW
         Retsu_GUN_HV_OFF = 1
         Retsu_GUN_HV_ON = 2
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("A" & LineSta & ":A" & LineSto))
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("B" & LineSta & ":B" & LineSto))
     Else
         LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "G").End(xlUp).ROW
         Retsu_GUN_HV_OFF = 7
         Retsu_GUN_HV_ON = 8
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("G" & LineSta & ":G" & LineSto))
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("H" & LineSta & ":H" & LineSto))
     End If
     
     
@@ -631,9 +633,11 @@ Sub 運転集計記録_Check(BL As String, sname As String)
 
     wb.Worksheets(sname).Activate    'これ大事
     LineSta = 3
-    LineSto = wb.Worksheets(sname).Cells(Rows.Count, "B").End(xlUp).ROW
-   
+    LineSto = GetLastDataRow(wb.Worksheets(sname), "B") ' wb.Worksheets(sname).Cells(Rows.Count, "B").End(xlUp).ROW
     
+    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("B" & LineSta & ":B" & LineSto))
+    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("C" & LineSta & ":C" & LineSto))
+
     For i = LineSta To LineSto
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Cells(i, Retsu_end).Interior.Color = RGB(0, 205, 0)

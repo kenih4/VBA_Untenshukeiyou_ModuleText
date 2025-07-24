@@ -549,6 +549,7 @@ Sub CheckAllDuplicatesByRange(targetRange As Range)
     Dim duplicates As Collection
     Set dict = CreateObject("Scripting.Dictionary")
     Set duplicates = New Collection
+    targetRange.Select
     
     For Each cell In targetRange
         If Not IsEmpty(cell.Value) Then
