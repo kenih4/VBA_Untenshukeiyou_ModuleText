@@ -142,7 +142,7 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     
     
-    wb_SHUKEI.Worksheets("配列").Select    '最前面に表示
+    wb_SHUKEI.Worksheets("配列").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("配列").Activate
     If GetLastDataRow(wb_SHUKEI.Worksheets("集計記録"), "C") <> Cells(4, "E").Value Then
         Call CMsg("シート「集計記録」の最終行と一致しません" & vbCrLf & "", 3, Cells(4, "E"))
@@ -152,19 +152,38 @@ Sub Middle_Check(BL As Integer)
  
  
  
-    wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示
+ 
+    wb_SHUKEI.Worksheets("利用時間(シフト)").Select    '最前面に表示_______________________________________________________________________________
+    wb_SHUKEI.Worksheets("利用時間(シフト)").Activate
+    Set ws = wb_SHUKEI.Worksheets("利用時間(シフト)")
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+    Else
+        LineSta = 9
+    End If
+    LineSto = GetLastDataRow(ws, "B")
+    Range("C" & LineSta & ":C" & LineSto).Select
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("C" & LineSta & ":C" & LineSto))
+    Range("D" & LineSta & ":D" & LineSto).Select
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("D" & LineSta & ":D" & LineSto))
+    
+    
+    
+    
+    wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
 
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
 '    CheckForErrors (ws)
     If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
-        Debug.Print " を実行します"
-        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, wb_SHUKEI.Worksheets("利用時間(User)"))
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
     Else
         LineSta = 9
     End If
 '   LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
     LineSto = GetLastDataRow(ws, "B")
+
+    
     
     For i = LineSta To LineSto
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value

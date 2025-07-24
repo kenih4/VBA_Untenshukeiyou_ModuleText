@@ -117,21 +117,21 @@ End Function
 
 
 '========================================================================================================
-Sub CMsg(ByVal Msg As String, ByVal Level As Integer, tc As Variant)
+Sub CMsg(ByVal msg As String, ByVal Level As Integer, tc As Variant)
 
-    Debug.Print "_____Msg(" & Msg & ")_____"
+    Debug.Print "_____Msg(" & msg & ")_____"
 
     tc.Select
     Select Case Level
     Case 1
         tc.Interior.Color = RGB(0, 255, 255)
-        MsgBox Msg, vbInformation, "お知らせ"
+        MsgBox msg, vbInformation, "お知らせ"
     Case 2
         tc.Interior.Color = RGB(255, 255, 0)
-        MsgBox Msg, vbExclamation, "警告"
+        MsgBox msg, vbExclamation, "警告"
     Case 3
         tc.Interior.Color = RGB(255, 0, 0)
-        MsgBox Msg, vbCritical, "アラート"
+        MsgBox msg, vbCritical, "アラート"
     Case Else
         Debug.Print "Zzz..."
     End Select
@@ -140,16 +140,16 @@ End Sub
 
 
 '========================================================================================================
-Sub Fin(ByVal Msg As String, ByVal Level As Integer)
+Sub Fin(ByVal msg As String, ByVal Level As Integer)
 
-    Debug.Print "_____Fin(" & Msg & ")_____"
+    Debug.Print "_____Fin(" & msg & ")_____"
     Select Case Level
         Case 1
-            MsgBox Msg, vbInformation, "終了処理"
+            MsgBox msg, vbInformation, "終了処理"
         Case 2
-            MsgBox Msg, vbExclamation, "終了処理"
+            MsgBox msg, vbExclamation, "終了処理"
         Case 3
-            MsgBox Msg, vbCritical, "終了処理"
+            MsgBox msg, vbCritical, "終了処理"
         Case Else
             Debug.Print "Zzz..."
     End Select
@@ -540,4 +540,39 @@ Function CheckCellsMatch(cell1 As Range, cell2 As Range) As Boolean
 End Function
 
 
+
+
+'=== 範囲内のすべての重複値を検出して、まとめて警告メッセージで表示 ======================================
+Sub CheckAllDuplicatesByRange(targetRange As Range)
+    Dim cell As Range
+    Dim dict As Object
+    Dim duplicates As Collection
+    Set dict = CreateObject("Scripting.Dictionary")
+    Set duplicates = New Collection
+    
+    For Each cell In targetRange
+        If Not IsEmpty(cell.Value) Then
+            If dict.exists(cell.Value) Then
+                duplicates.Add cell
+            Else
+                dict.Add cell.Value, cell
+            End If
+        End If
+    Next cell
+    
+    If duplicates.Count > 0 Then
+        Dim msg As String
+        msg = "以下の重複があります:" & vbCrLf
+        
+        Dim dupCell As Range
+        For Each dupCell In duplicates
+            msg = msg & dupCell.Address(False, False) & ": " & dupCell.Value & vbCrLf
+            dupCell.Interior.Color = RGB(255, 200, 200)
+        Next dupCell
+        
+        MsgBox msg, vbCritical, "重複検出結果"
+    Else
+        MsgBox "重複はありませんでした", vbInformation, "確認完了"
+    End If
+End Sub
 
