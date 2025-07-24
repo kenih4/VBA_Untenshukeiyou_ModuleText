@@ -157,8 +157,13 @@ Sub Middle_Check(BL As Integer)
 
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
 '    CheckForErrors (ws)
-    LineSta = 9
-'    LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        Debug.Print " を実行します"
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, wb_SHUKEI.Worksheets("利用時間(User)"))
+    Else
+        LineSta = 9
+    End If
+'   LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
     LineSto = GetLastDataRow(ws, "B")
     
     For i = LineSta To LineSto
@@ -180,7 +185,7 @@ Sub Middle_Check(BL As Integer)
         End If
         
         If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "G").Value Then ' 「合計時間」の確認
-            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G:" & ws.Cells(i, "G").Value, 3, Cells(i, "G"))
+            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "G").Value, 3, Cells(i, "G"))
         End If
         
         If ws.Cells(i, "H").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "H").Value < 0 Then ' 「利用時間」の確認
