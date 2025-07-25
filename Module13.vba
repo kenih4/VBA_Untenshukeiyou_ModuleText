@@ -131,14 +131,14 @@ Sub PDF_output_Click()
                               IncludeDocProperties:=True, IgnorePrintAreas:=False, _
                               OpenAfterPublish:=False
                               '  IgnorePrintAreas: Falseの場合、設定された印刷エリアのみがPDFにエクスポートされます。
-    Next i
     
-    ' PDFを開く
-    For i = LBound(myArray) To UBound(myArray)
+        ' PDFを開く
         pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
         shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
+        MsgBox "運転状況集計(" & myArray(i) & ").pdf" & vbCrLf & "を出力しました。", vbInformation
+        
     Next i
-
+    
 End Sub
 
 

@@ -113,7 +113,7 @@ Sub Final_Check(BL As Integer)
                     If tc.MergeArea.Columns.Count > 1 Or tc.MergeArea.Rows(1).ROW <> j Then
                         Debug.Print "水平方向に結合されてる、または、垂直方向に結合されていて先頭です。" & i & "   " & j & "   " & col
                     Else
-                        If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", 3, tc)
+                        If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
                         Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
                         If col = 3 Or col = 4 Then    ' シフト時間
@@ -121,11 +121,11 @@ Sub Final_Check(BL As Integer)
                         End If
 
                         If col = 5 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
-                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
     
                         If col = 6 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
-                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
 
                         If col = 7 Then  'Fault間隔時間
@@ -133,11 +133,11 @@ Sub Final_Check(BL As Integer)
                         End If
 
                         If col = 8 And (tc.Value < 0 Or Not IsNumeric(tc.Value)) Then  'Fault回数
-                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                            Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
 
                         If col = 9 And (StrComp(Right(tc.Value, 1), "G", vbBinaryCompare) = 0 = False) Then  ' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
-                            Call CMsg("ユーザー名が入る筈なのにGがありませんよ", 3, tc)
+                            Call CMsg("ユーザー名が入る筈なのにGがありませんよ", vbCritical, tc)
                         End If
 
                     End If
@@ -176,13 +176,13 @@ Sub Final_Check(BL As Integer)
                 tc.Select
                 tc.Interior.Color = RGB(0, 255, 0)
                 'Sleep 100    ' msec
-                If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", 3, tc)
+                If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
                 Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
                 If col = 3 Then    ' 日付
                     pattern = "^\d{4}/\d{2}/\d{2} \d{2}:\d{2} - \d{4}/\d{2}/\d{2} \d{2}:\d{2}$"    '       別の書式（例: YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM） pattern = "^\d{4}-\d{2}-\d{2} \d{2}:\d{2} - \d{4}-\d{2}-\d{2} \d{2}:\d{2}$"
                     If Not IsValidFormat(tc, pattern) Then
-                        Call CMsg("セル " & tc.Address(False, False) & " の値が正しい形式ではありません。" & vbCrLf & "正しい形式: YYYY/MM/DD HH:MM - YYYY/MM/DD HH:MM", 3, tc)
+                        Call CMsg("セル " & tc.Address(False, False) & " の値が正しい形式ではありません。" & vbCrLf & "正しい形式: YYYY/MM/DD HH:MM - YYYY/MM/DD HH:MM", vbCritical, tc)
                     End If
                 End If
 
@@ -194,14 +194,14 @@ Sub Final_Check(BL As Integer)
 
 
             If wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 9).Value <= 0 Then
-                Call CMsg("利用調整運転(BL調整orBL-study)はなかったんですね。", 2, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 9))
+                Call CMsg("利用調整運転(BL調整orBL-study)はなかったんですね。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 9))
             End If
 
             If wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 11).Value <= 0 Then
-                Call CMsg("利用運転(ユーザー)はなかったんですね。" & vbCrLf & "「ユーザー運転無し」と手動で処理しないといけない部分があります。", 2, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 11))
+                Call CMsg("利用運転(ユーザー)はなかったんですね。" & vbCrLf & "「ユーザー運転無し」と手動で処理しないといけない部分があります。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 11))
             Else
                 If wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 12).Value <= 0 Then
-                    Call CMsg("一回もトリップしてないって事？確認した方がよいです。" & vbCrLf & "シート「集計記録」に数式が入っていない可能性があります", 2, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 12))
+                    Call CMsg("一回もトリップしてないって事？確認した方がよいです。" & vbCrLf & "シート「集計記録」に数式が入っていない可能性があります", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 12))
                 End If
             End If
         End If
@@ -241,11 +241,11 @@ Sub Final_Check(BL As Integer)
                         Debug.Print "水平方向に結合されています。" & i & "   " & j & "   " & col & "     tc.Value = " & tc.Value & "  " & tc.MergeArea.Columns.Count
                     Else
 
-                        If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", 3, tc)
+                        If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
                         Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
                         If col = 5 And (wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value = "total" And (StrComp(Right(wb_MATOME.Worksheets("まとめ ").Cells(j, 9).Value, 1), "G", vbBinaryCompare) = 0) = False) Then  '' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
-                            Call CMsg("ユーザー名が入るべきですが。。確認した方がいいです。", 2, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
+                            Call CMsg("ユーザー名が入るべきですが。。確認した方がいいです。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
                         End If
 
                         If col = 3 Or col = 4 Then
@@ -257,11 +257,11 @@ Sub Final_Check(BL As Integer)
                         End If
     
                         If (col = 5 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total") And (tc.Value <= 0 Or tc.Value > 0.5 Or Not IsNumeric(tc.Value)) Then
-                            Call CMsg("範囲外かもしれないです。確認した方がいいです。", 3, tc)
+                            Call CMsg("範囲外かもしれないです。確認した方がいいです。", vbCritical, tc)
                         End If
 
                         If col = 6 And (tc.Value <= 0.8 Or tc.Value > 1 Or Not IsNumeric(tc.Value)) Then  '利用率%
-                            Call CMsg("利用率低い。または、範囲外 or 文字列   確認した方がいいです。", 3, tc)
+                            Call CMsg("利用率低い。または、範囲外 or 文字列   確認した方がいいです。", vbCritical, tc)
                         End If
 
                     End If
@@ -302,19 +302,19 @@ Sub Final_Check(BL As Integer)
                     tc.Interior.Color = RGB(0, 255, 0)
 
                     'Sleep 100    ' msec
-                    If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", 3, tc)
+                    If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
                     Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
                     If col = 3 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
-                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
                     If col = 4 And (tc.Value <= 0 Or tc.Value > 60 Or Not IsNumeric(tc.Value)) Then  '繰返し
-                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
     
                     If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
-                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
     
 '                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then
 '                            Call CMsg("セルには「+」が含まれています。", 2, tc)
@@ -328,11 +328,11 @@ Sub Final_Check(BL As Integer)
                     End If
 
                     If col = 6 And (tc.Value <= 0 Or tc.Value > 2000 Or Not IsNumeric(tc.Value)) Then  '強度
-                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", 3, tc)
+                        Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
                     If col = 7 And (IsNumeric(tc.Value)) Then  '備考
-                        Call CMsg("数値です。確認した方がいいです。", 3, tc)
+                        Call CMsg("数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
                 Next
@@ -438,7 +438,6 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
 
         If wb_MATOME.Worksheets("まとめ ").Cells(i, 2).Value = UNIT Then
             Debug.Print "この行　i = " & i & " が、ユニット " & Cells(i, 2).Value
-            CantFindUnit = CantFindUnit + 1
             For j = i To i + wb_MATOME.Worksheets("まとめ ").Cells(i, 2).MergeArea.Rows.Count - 1
                 For col = 3 To 7
                     Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, col)
@@ -491,7 +490,7 @@ Function IsCellErrorType(Target As Variant) As Boolean
         Case Else
             IsCellErrorType = False    'IsCellErrorType = "その他のエラー"
         End Select
-        Call CMsg("このセルでエラーが発生しています。@IsCellErrorType", 3, Target)
+        Call CMsg("このセルでエラーが発生しています。@IsCellErrorType", vbCritical, Target)
     Else
         IsCellErrorType = True    'IsCellErrorType = "エラーなし"
     End If
@@ -508,7 +507,7 @@ Function CheckDateTimeFormat(Target As Variant) As Boolean
     CheckDateTimeFormat = False
     If IsDate(Target.Value) Then
         If Format(Target.Value, "yyyy/mm/dd hh:mm") <> Target.Text Then
-            Call CMsg("フォーマットが正しくありません。@CheckDateTimeFormat" & vbCrLf & "正しい形式: 2025/01/28 22:00", 3, Target)
+            Call CMsg("フォーマットが正しくありません。@CheckDateTimeFormat" & vbCrLf & "正しい形式: 2025/01/28 22:00", vbCritical, Target)
         Else
             CheckDateTimeFormat = True
             compareDate = DateSerial(2025, 1, 1) + TimeSerial(12, 30, 0)
@@ -517,7 +516,7 @@ Function CheckDateTimeFormat(Target As Variant) As Boolean
             End If
         End If
     Else
-        Call CMsg("有効な日付が入力されていません。@CheckDateTimeFormat", 3, Target)
+        Call CMsg("有効な日付が入力されていません。@CheckDateTimeFormat", vbCritical, Target)
     End If
 End Function
 
@@ -528,7 +527,7 @@ Function CheckTimeFormat(Target As Variant) As Boolean
     CheckTimeFormat = False
     If Not IsNumeric(Target.Value) Or Target.Value < 0 Then
         Debug.Print "有効な時間が入力されていません。@CheckTimeFormat    target.Value = " & Target.Value
-        Call CMsg("有効な時間が入力されていません。@CheckTimeFormat", 3, Target)
+        Call CMsg("有効な時間が入力されていません。@CheckTimeFormat", vbCritical, Target)
     Else
         If IsDate(CDate(Target.Value)) Then
             Dim fmt As String
@@ -539,7 +538,7 @@ Function CheckTimeFormat(Target As Variant) As Boolean
                 CheckTimeFormat = True
             Else
                 Debug.Print "時刻データですが、フォーマットが異なります。    target.Value = " & Target.Value
-                Call CMsg("時刻データですが、フォーマットが異なります。@CheckTimeFormat", 3, Target)
+                Call CMsg("時刻データですが、フォーマットが異なります。@CheckTimeFormat", vbCritical, Target)
             End If
         End If
     End If

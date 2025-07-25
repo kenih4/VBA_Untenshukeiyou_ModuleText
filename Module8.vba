@@ -124,14 +124,14 @@ Sub CMsg(ByVal msg As String, ByVal Level As Integer, tc As Variant)
     tc.Select
     tc.Font.Bold = True
     Select Case Level
-    Case 1
+    Case vbInformation
         tc.Font.Color = RGB(0, 200, 0)
         tc.Interior.Color = RGB(0, 255, 255)
         MsgBox msg, vbInformation, "Ç®ímÇÁÇπ"
-    Case 2
+    Case vbExclamation
         tc.Interior.Color = RGB(255, 255, 0)
         MsgBox msg, vbExclamation, "íçà”"
-    Case 3
+    Case vbCritical
         tc.Interior.Color = RGB(255, 0, 0)
         MsgBox msg, vbCritical, "åxçê"
     Case Else

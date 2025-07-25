@@ -147,17 +147,17 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("運転予定時間").Activate
     ' シート[運転予定時間]のE列最終行は336.0等と時間で表示されているが、中身は日。
     If Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) <> Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)) Then
-        Call CMsg("シート「運転予定時間」のE列最終行とユニット合計時間が一致しません" & vbCrLf & Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) & " と " & Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)), 3, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+        Call CMsg("シート「運転予定時間」のE列最終行とユニット合計時間が一致しません" & vbCrLf & Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) & " と " & Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)), vbCritical, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     Else
-        Call CMsg("一致、OK!!" & vbCrLf, 1, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+        Call CMsg("一致、OK!!" & vbCrLf, vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     End If
     
     wb_SHUKEI.Worksheets("配列").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("配列").Activate
     If GetLastDataRow(wb_SHUKEI.Worksheets("集計記録"), "C") <> Cells(4, "E").Value Then
-        Call CMsg("シート「集計記録」の最終行と一致しません" & vbCrLf & "", 3, Cells(4, "E"))
+        Call CMsg("シート「集計記録」の最終行と一致しません" & vbCrLf & "", vbCritical, Cells(4, "E"))
     Else
-        Call CMsg("一致、OK   " & vbCrLf, 1, Cells(4, "E"))
+        Call CMsg("一致、OK   " & vbCrLf, vbInformation, Cells(4, "E"))
     End If
  
  
@@ -198,24 +198,24 @@ Sub Middle_Check(BL As Integer)
         
         If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Or Not IsDateTimeFormatRegEx(Cells(i, "E")) Or Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
             Rows(i).Interior.Color = RGB(255, 0, 0)
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, "C"))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, "C"))
         Else
             Rows(i).Interior.Color = RGB(0, 205, 0)
             If Not CheckCellsMatch(ws.Cells(i, "C"), ws.Cells(i, "E")) Then
-                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "C").Value & vbCrLf & ws.Cells(i, "E").Value, 3, Cells(i, "E"))
+                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "C").Value & vbCrLf & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
             End If
             
             If Not CheckCellsMatch(ws.Cells(i, "D"), ws.Cells(i, "F")) Then
-                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "D").Value & vbCrLf & ws.Cells(i, "F").Value, 3, Cells(i, "F"))
+                Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "D").Value & vbCrLf & ws.Cells(i, "F").Value, vbCritical, Cells(i, "F"))
             End If
         End If
         
         If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "G").Value Then ' 「合計時間」の確認
-            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "G").Value, 3, Cells(i, "G"))
+            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "G").Value, vbCritical, Cells(i, "G"))
         End If
         
         If ws.Cells(i, "H").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "H").Value < 0 Then ' 「利用時間」の確認
-            Call CMsg("「利用時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "H"))
+            Call CMsg("「利用時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "H"))
         End If
         
         If ws.Cells(i, "I").Value > 100 Or ws.Cells(i, "I").Value < 0 Then  ' 「利用率」の確認
@@ -223,27 +223,27 @@ Sub Middle_Check(BL As Integer)
         End If
         
         If ws.Cells(i, "J").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "J").Value < 0 Then ' 「調整時間」の確認
-            Call CMsg("「調整時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "J"))
+            Call CMsg("「調整時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "J"))
         End If
         
         If ws.Cells(i, "K").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "K").Value < 0 Then ' 「Fault時間」の確認
-            Call CMsg("「Fault時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "K"))
+            Call CMsg("「Fault時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "K"))
         End If
         
         If ws.Cells(i, "L").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "L").Value < 0 Then ' 「ダウンタイム」の確認
-            Call CMsg("「ダウンタイム」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", 3, Cells(i, "L"))
+            Call CMsg("「ダウンタイム」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "L"))
         End If
         
         If ws.Cells(i, "M").Value < 0 Then  ' 「Fault合計」の確認
-            Call CMsg("「Fault合計」が  負" & vbCrLf & "====", 3, Cells(i, "M"))
+            Call CMsg("「Fault合計」が  負" & vbCrLf & "====", vbCritical, Cells(i, "M"))
         End If
             
         If ws.Cells(i, "N").Value >= 1 Then ' 「Fault間隔」の確認   時刻ならシリアル値で1未満
-            Call CMsg("「Fault間隔」のフォーマットが 時間でないです" & vbCrLf & "====", 3, Cells(i, "N"))
+            Call CMsg("「Fault間隔」のフォーマットが 時間でないです" & vbCrLf & "====", vbCritical, Cells(i, "N"))
         End If
     
         If IsNumeric(ws.Cells(i, "O").Value) Then  ' 「ユーザー」の確認
-            Call CMsg("「ユーザー」が数値ですけど、、、" & vbCrLf & "====", 2, Cells(i, "O"))
+            Call CMsg("「ユーザー」が数値ですけど、、、" & vbCrLf & "====", vbExclamation, Cells(i, "O"))
         End If
         
     Next
@@ -434,11 +434,11 @@ Sub 計画時間xlsx_Check(BL As Integer)
         
         
         If Not IsDateTimeFormatRegEx(Cells(i, 2)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 2))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 2))
         End If
 
         If Not IsDateTimeFormatRegEx(Cells(i, 3)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 3))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 3))
         End If
 
         
@@ -452,27 +452,27 @@ Sub 計画時間xlsx_Check(BL As Integer)
         
         
         If (Cells(i, 3).Value - Cells(i, 2).Value) <= 0 Then
-            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", 3, Cells(i, 3))
+            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", vbCritical, Cells(i, 3))
         End If
         
         
         If (Cells(i, 3).Value - Cells(LineSta, 2).Value) <= 0 Then
-            Call CMsg("時間がおかしいぞ！　ユニット開始の時間より古い日時です。" & vbCrLf & "~~~", 3, Cells(i, 3))
+            Call CMsg("時間がおかしいぞ！　ユニット開始の時間より古い日時です。" & vbCrLf & "~~~", vbCritical, Cells(i, 3))
         End If
         
         If InStr(Cells(i, 4).Value, "プログラム") > 0 Or InStr(Cells(i, 4).Value, "FCBT") > 0 Or InStr(Cells(i, 4).Value, "大学院") > 0 Or InStr(Cells(i, 4).Value, "基盤") > 0 Or InStr(Cells(i, 4).Value, "BL") > 0 Then
-            Call CMsg("変だぞ！！！" & vbCrLf & "FCBTの運転種別がユーザー運転になってる事を確認。" & vbCrLf & "基盤開発プログラムや、大学院生プログラムはBLstudyになります！！" & vbCrLf & "BL studeyが紛れ込んでるぞ！！", 2, Cells(i, 4))
+            Call CMsg("変だぞ！！！" & vbCrLf & "FCBTの運転種別がユーザー運転になってる事を確認。" & vbCrLf & "基盤開発プログラムや、大学院生プログラムはBLstudyになります！！" & vbCrLf & "BL studeyが紛れ込んでるぞ！！", vbExclamation, Cells(i, 4))
         End If
                 
         'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
                 
         If i = LineSto Then
             If (Cells(i, 3).Value - Cells(i, 2).Value) <> 14 Then
-                Call CMsg("1ユニット、2週間じゃないんですね" & vbCrLf & "~~~", 1, Cells(i, 3))
+                Call CMsg("1ユニット、2週間じゃないんですね" & vbCrLf & "~~~", vbExclamation, Cells(i, 3))
             End If
             
             If Cells(i, 4).Value <> "" Then
-                Call CMsg("空欄であるべきところに値が入力はいってます。" & vbCrLf & "~~~", 3, Cells(i, 4))
+                Call CMsg("空欄であるべきところに値が入力はいってます。" & vbCrLf & "~~~", vbCritical, Cells(i, 4))
             End If
             
         End If
@@ -565,16 +565,16 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
         Cells(i, Retsu_GUN_HV_ON).Interior.Color = RGB(0, 205, 0)
                 
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_GUN_HV_OFF)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 2))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 2))
         End If
 
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_GUN_HV_ON)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, 3))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 3))
         End If
                 
         
         If (Cells(i, Retsu_GUN_HV_ON).Value - Cells(i, Retsu_GUN_HV_OFF).Value) <= 0 Then
-            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", 3, Cells(i, 3))
+            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", vbCritical, Cells(i, 3))
         End If
                
         'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
@@ -658,22 +658,22 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         Cells(i, Retsu_total).Interior.Color = RGB(0, 205, 0)
         
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_end)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, Retsu_end))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, Retsu_end))
         End If
 
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_start)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", 3, Cells(i, Retsu_start))
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, Retsu_start))
         End If
                 
         
         If (Cells(i, Retsu_start).Value - Cells(i, Retsu_end).Value) <= 0 Then
-            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", 3, Cells(i, Retsu_start))
+            Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", vbCritical, Cells(i, Retsu_start))
         End If
         
         If sname = "停止時間" Then
             If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' ユニット開始時刻より新しいところだけ確認
                 If Cells(i, Retsu_chouseizikan) <> "" Then
-                    Call CMsg("列(調整時間)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", 2, Cells(i, Retsu_chouseizikan))
+                    Call CMsg("列(調整時間)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseizikan))
                 End If
             End If
         End If
@@ -681,7 +681,7 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         result = CheckSameFormulaType(Cells(LineSta, Retsu_total), Cells(i, Retsu_total))
         If result = False Then
             Debug.Print "要確認！　セル(" & i & ", " & Retsu_total & ") 数式が入っていないか、数式が異なる"
-            Call CMsg("数式が入っていないか、数式が異なる！" & vbCrLf & "~~~", 3, Cells(i, Retsu_total))
+            Call CMsg("数式が入っていないか、数式が異なる！" & vbCrLf & "~~~", vbCritical, Cells(i, Retsu_total))
         End If
                            
         'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
