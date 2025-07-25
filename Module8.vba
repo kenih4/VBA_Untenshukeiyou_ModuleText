@@ -496,7 +496,7 @@ End Function
 
 
 
-'=== 値が入ってる最終行を取得したい。空白セルは無視、数式も無視して欲しい ================================
+'=== 値が入ってる最終行を取得したい ================================
 '     最終行番号（例えば1048576行目）を返す可能性がある関数には、Long でないと オーバーフローの危険があります。
 Function GetLastDataRow(ws As Worksheet, colName As String) As Long
     Dim i As Long
@@ -508,9 +508,9 @@ Function GetLastDataRow(ws As Worksheet, colName As String) As Long
     For i = lastRow To 1 Step -1
 '        If ws.Cells(i, colNum).HasFormula Then
             If ws.Cells(i, colNum) = "" Then
-                Debug.Print i & "   KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
+'                Debug.Print i & "   KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
             Else
-                Debug.Print i & "   Not KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
+'                Debug.Print i & "   Not KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
                 GetLastDataRow = i ' 数式が入ってて、値が入ってる場合、ココだ
                 Exit Function
             End If
@@ -532,7 +532,7 @@ Function CheckCellsMatch(cell1 As Range, cell2 As Range) As Boolean
     Dim tolerance As Double
 
     ' 許容誤差を設定
-    tolerance = 0.0000000001 ' 10の-10乗
+    tolerance = 0.0000000001 ' 10の-10乗より小さい差は無視
 
     If Abs(cell1.Value - cell2.Value) < tolerance Then
         CheckCellsMatch = True ' 一致している場合
@@ -541,6 +541,19 @@ Function CheckCellsMatch(cell1 As Range, cell2 As Range) As Boolean
     End If
 End Function
 
+'=== 2つの値が一致するのかしないのか。日時の比較を行う際には、非常に小さい差を許容する方法が有効 ================================
+Function CheckValMatch(v1 As Variant, v2 As Variant) As Boolean
+    Dim tolerance As Double
+
+    ' 許容誤差を設定
+    tolerance = 0.0000000001 ' 10の-10乗より小さい差は無視
+
+    If Abs(v1 - v2) < tolerance Then
+        CheckValMatch = True ' 一致している場合
+    Else
+        CheckValMatch = False ' 一致していない場合
+    End If
+End Function
 
 
 

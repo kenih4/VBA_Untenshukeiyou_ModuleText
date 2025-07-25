@@ -149,8 +149,54 @@ Sub Middle_Check(BL As Integer)
     If Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) <> Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)) Then
         Call CMsg("シート「運転予定時間」のE列最終行とユニット合計時間が一致しません" & vbCrLf & Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) & " と " & Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)), vbCritical, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     Else
-        Call CMsg("一致、OK!!" & vbCrLf, vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+        Call CMsg("一致、OK!!" & vbCrLf & vbCrLf & "ユニット合計時間が一致", vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     End If
+    
+    
+    
+    wb_SHUKEI.Worksheets("利用時間（期間）").Select    '最前面に表示_______________________________________________________________________________
+    wb_SHUKEI.Worksheets("利用時間（期間）").Activate
+    Set ws = wb_SHUKEI.Worksheets("利用時間（期間）")
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+    Else
+        LineSta = 4
+    End If
+    LineSto = GetLastDataRow(ws, "A")
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間（期間）").Range("A" & LineSta & ":A" & LineSto))
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間（期間）").Range("B" & LineSta & ":B" & LineSto))
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間（期間）").Range("C" & LineSta & ":C" & LineSto))
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間（期間）").Range("D" & LineSta & ":D" & LineSto))
+    For i = LineSta To LineSto
+        Rows(i).Select
+        Rows(i).Interior.Color = RGB(0, 255, 0)
+        
+        If Not CheckValMatch(ws.Cells(i, "F").Value + ws.Cells(i, "H").Value + ws.Cells(i, "J").Value, ws.Cells(i, "E").Value) Then  ' 「合計時間」の確認
+            Call CMsg("新関数「合計時間」が一致しません" & ws.Cells(i, "F").Value & "   " & ws.Cells(i, "H").Value & "   " & ws.Cells(i, "J").Value & "   E=" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
+        End If
+        
+        If Not CheckCellsMatch(ws.Cells(i, "J"), ws.Cells(i, "M")) Then
+            Call CMsg("[利用運転計画]が一致しません", vbCritical, Cells(i, "J"))
+        End If
+        
+        If Not CheckCellsMatch(ws.Cells(i, "E"), ws.Cells(i, "N")) Then
+            Call CMsg("[総運転時間]が一致しません", vbCritical, Cells(i, "N"))
+        End If
+        
+        If ws.Cells(i, "G").Value > ws.Cells(i, "F").Value Or ws.Cells(i, "G").Value < 0 Then ' 「施設調整計画」の確認
+            Call CMsg("「施設調整計画」が「施設調整計画ダウンタイム」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "G"))
+        End If
+
+        If ws.Cells(i, "I").Value > ws.Cells(i, "H").Value Or ws.Cells(i, "I").Value < 0 Then ' 「利用調整計画」の確認
+            Call CMsg("「利用調整計画」が「利用調整計画ダウンタイム」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "I"))
+        End If
+                
+        If ws.Cells(i, "K").Value > ws.Cells(i, "J").Value Or ws.Cells(i, "K").Value < 0 Then ' 「利用運転計画」の確認
+            Call CMsg("「利用運転計画」が「利用運転計画ダウンタイム」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "K"))
+        End If
+        
+    Next
+    
     
     
     wb_SHUKEI.Worksheets("配列").Select    '最前面に表示_______________________________________________________________________________
@@ -158,7 +204,7 @@ Sub Middle_Check(BL As Integer)
     If GetLastDataRow(wb_SHUKEI.Worksheets("集計記録"), "C") <> Cells(4, "E").Value Then
         Call CMsg("シート「集計記録」の最終行と一致しません" & vbCrLf & "", vbCritical, Cells(4, "E"))
     Else
-        Call CMsg("一致、OK   " & vbCrLf, vbInformation, Cells(4, "E"))
+        Call CMsg("一致、OK!!" & vbCrLf & vbCrLf & vbCrLf & "シート「集計記録」の最終行と一致", vbInformation, Cells(4, "E"))
     End If
  
  
@@ -179,8 +225,14 @@ Sub Middle_Check(BL As Integer)
     
     For i = LineSta To LineSto
         Rows(i).Select
+        Rows(i).Interior.Color = RGB(0, 255, 0)
+        
+        If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Then
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, "C"))
+        End If
+        
         If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "E").Value Then ' 「合計時間」の確認
-            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
+            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   E列:" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
         End If
         
         If ws.Cells(i, "F").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "F").Value < 0 Then ' 「利用時間」の確認
@@ -207,7 +259,7 @@ Sub Middle_Check(BL As Integer)
             Call CMsg("「Fault合計」が  負" & vbCrLf & "====", vbCritical, Cells(i, "K"))
         End If
             
-        If ws.Cells(i, "L").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "L").Value < 0 Then ' 「Fault間隔」の確認
+        If ws.Cells(i, "L").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "L").Value < 0 Then ' 「Fault間隔」の確認
             Call CMsg("「Fault間隔」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "L"))
         End If
     
@@ -233,16 +285,13 @@ Sub Middle_Check(BL As Integer)
     For i = LineSta To LineSto
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Rows(i).Select
-        
+        Rows(i).Interior.Color = RGB(0, 255, 0)
         If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Or Not IsDateTimeFormatRegEx(Cells(i, "E")) Or Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
-            Rows(i).Interior.Color = RGB(255, 0, 0)
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, "C"))
         Else
-            Rows(i).Interior.Color = RGB(0, 205, 0)
             If Not CheckCellsMatch(ws.Cells(i, "C"), ws.Cells(i, "E")) Then
                 Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "C").Value & vbCrLf & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
             End If
-            
             If Not CheckCellsMatch(ws.Cells(i, "D"), ws.Cells(i, "F")) Then
                 Call CMsg("日時が一致しません   " & vbCrLf & "" & ws.Cells(i, "D").Value & vbCrLf & ws.Cells(i, "F").Value, vbCritical, Cells(i, "F"))
             End If
@@ -284,6 +333,9 @@ Sub Middle_Check(BL As Integer)
             Call CMsg("「ユーザー」が数値、または、ユーザー名なのに「G」がない、" & vbCrLf & "====", vbExclamation, Cells(i, "O"))
         End If
         
+        If Not CheckCellsMatch(ws.Cells(i, "G"), ws.Cells(i, "W")) Then
+            Call CMsg("「ユーザー運転時間（計画）」が一致しません   ", vbCritical, Cells(i, "W"))
+        End If
     Next
 
     Call Fin("終了しました。" & vbCrLf & "", 1)
