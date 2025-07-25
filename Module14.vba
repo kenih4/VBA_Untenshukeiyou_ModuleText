@@ -152,6 +152,7 @@ Sub Middle_Check(BL As Integer)
         Call CMsg("一致、OK!!" & vbCrLf, vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     End If
     
+    
     wb_SHUKEI.Worksheets("配列").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("配列").Activate
     If GetLastDataRow(wb_SHUKEI.Worksheets("集計記録"), "C") <> Cells(4, "E").Value Then
@@ -176,10 +177,49 @@ Sub Middle_Check(BL As Integer)
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("C" & LineSta & ":C" & LineSto))
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("D" & LineSta & ":D" & LineSto))
     
+    For i = LineSta To LineSto
+        Rows(i).Select
+        If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "E").Value Then ' 「合計時間」の確認
+            Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
+        End If
+        
+        If ws.Cells(i, "F").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "F").Value < 0 Then ' 「利用時間」の確認
+            Call CMsg("「利用時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "F"))
+        End If
+        
+        If ws.Cells(i, "G").Value > 100 Or ws.Cells(i, "G").Value < 0 Then  ' 「利用率」の確認
+            Call CMsg("「利用率」が  0 ~ 100%の範囲でない   " & vbCrLf & "====", 3, Cells(i, "G"))
+        End If
+        
+        If ws.Cells(i, "H").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "H").Value < 0 Then ' 「調整時間」の確認
+            Call CMsg("「調整時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "H"))
+        End If
+        
+        If ws.Cells(i, "I").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "I").Value < 0 Then ' 「Fault時間」の確認
+            Call CMsg("「Fault時間」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "I"))
+        End If
+        
+        If ws.Cells(i, "J").Value > ws.Cells(i, "E").Value Or ws.Cells(i, "J").Value < 0 Then ' 「ダウンタイム」の確認
+            Call CMsg("「ダウンタイム」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "J"))
+        End If
+        
+        If ws.Cells(i, "K").Value < 0 Then  ' 「Fault合計」の確認
+            Call CMsg("「Fault合計」が  負" & vbCrLf & "====", vbCritical, Cells(i, "K"))
+        End If
+            
+        If ws.Cells(i, "L").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "L").Value < 0 Then ' 「Fault間隔」の確認
+            Call CMsg("「Fault間隔」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "L"))
+        End If
+    
+        If IsNumeric(ws.Cells(i, "M").Value) Or InStr(Cells(i, "M"), "G") = 0 Then  ' 「ユーザー」の確認
+            Call CMsg("「ユーザー」が数値、または、ユーザー名なのに「G」がない、" & vbCrLf & "====", vbExclamation, Cells(i, "M"))
+        End If
+        
+    Next
+    
     
     wb_SHUKEI.Worksheets("利用時間(User)").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
-
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
 '    CheckForErrors (ws)
     If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
@@ -189,8 +229,6 @@ Sub Middle_Check(BL As Integer)
     End If
 '   LineSto = ws.Cells(wb_SHUKEI.Worksheets("利用時間(User)").Rows.Count, "B").End(xlUp).ROW ' 列Bの最下行から上方向にデータを探すので、空白があっても無視できます。 これだと数式が入ってると無理
     LineSto = GetLastDataRow(ws, "B")
-
-    
     
     For i = LineSta To LineSto
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
@@ -237,13 +275,13 @@ Sub Middle_Check(BL As Integer)
         If ws.Cells(i, "M").Value < 0 Then  ' 「Fault合計」の確認
             Call CMsg("「Fault合計」が  負" & vbCrLf & "====", vbCritical, Cells(i, "M"))
         End If
-            
-        If ws.Cells(i, "N").Value >= 1 Then ' 「Fault間隔」の確認   時刻ならシリアル値で1未満
-            Call CMsg("「Fault間隔」のフォーマットが 時間でないです" & vbCrLf & "====", vbCritical, Cells(i, "N"))
+
+        If ws.Cells(i, "N").Value > ws.Cells(i, "G").Value Or ws.Cells(i, "N").Value < 0 Then ' 「Fault間隔」の確認
+            Call CMsg("「Fault間隔」が「合計時間」よりも大きい、または、負  " & vbCrLf & "====", vbCritical, Cells(i, "N"))
         End If
     
-        If IsNumeric(ws.Cells(i, "O").Value) Then  ' 「ユーザー」の確認
-            Call CMsg("「ユーザー」が数値ですけど、、、" & vbCrLf & "====", vbExclamation, Cells(i, "O"))
+        If IsNumeric(ws.Cells(i, "O").Value) Or InStr(Cells(i, "O"), "G") = 0 Then  ' 「ユーザー」の確認
+            Call CMsg("「ユーザー」が数値、または、ユーザー名なのに「G」がない、" & vbCrLf & "====", vbExclamation, Cells(i, "O"))
         End If
         
     Next
