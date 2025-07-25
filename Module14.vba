@@ -172,7 +172,7 @@ Sub Middle_Check(BL As Integer)
         Rows(i).Interior.Color = RGB(0, 255, 0)
         
         If Not CheckValMatch(ws.Cells(i, "F").Value + ws.Cells(i, "H").Value + ws.Cells(i, "J").Value, ws.Cells(i, "E").Value) Then  ' 「合計時間」の確認
-            Call CMsg("新関数「合計時間」が一致しません" & ws.Cells(i, "F").Value & "   " & ws.Cells(i, "H").Value & "   " & ws.Cells(i, "J").Value & "   E=" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
+            Call CMsg("「合計時間」が一致しません" & ws.Cells(i, "F").Value & "   " & ws.Cells(i, "H").Value & "   " & ws.Cells(i, "J").Value & "   E=" & ws.Cells(i, "E").Value, vbCritical, Cells(i, "E"))
         End If
         
         If Not CheckCellsMatch(ws.Cells(i, "J"), ws.Cells(i, "M")) Then
@@ -297,7 +297,7 @@ Sub Middle_Check(BL As Integer)
             End If
         End If
         
-        If (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) <> ws.Cells(i, "G").Value Then ' 「合計時間」の確認
+        If Not CheckValMatch(ws.Cells(i, "D").Value - ws.Cells(i, "C").Value, ws.Cells(i, "G").Value) Then    ' 「合計時間」の確認
             Call CMsg("「合計時間」が一致しません   " & vbCrLf & "    差分：" & (ws.Cells(i, "D").Value - ws.Cells(i, "C").Value) & "   G列:" & ws.Cells(i, "G").Value, vbCritical, Cells(i, "G"))
         End If
         
