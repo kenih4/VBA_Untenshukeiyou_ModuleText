@@ -122,16 +122,18 @@ Sub CMsg(ByVal msg As String, ByVal Level As Integer, tc As Variant)
     Debug.Print "_____Msg(" & msg & ")_____"
 
     tc.Select
+    tc.Font.Bold = True
     Select Case Level
     Case 1
+        tc.Font.Color = RGB(0, 200, 0)
         tc.Interior.Color = RGB(0, 255, 255)
         MsgBox msg, vbInformation, "お知らせ"
     Case 2
         tc.Interior.Color = RGB(255, 255, 0)
-        MsgBox msg, vbExclamation, "警告"
+        MsgBox msg, vbExclamation, "注意"
     Case 3
         tc.Interior.Color = RGB(255, 0, 0)
-        MsgBox msg, vbCritical, "アラート"
+        MsgBox msg, vbCritical, "警告"
     Case Else
         Debug.Print "Zzz..."
     End Select

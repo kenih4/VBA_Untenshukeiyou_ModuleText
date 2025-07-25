@@ -141,6 +141,16 @@ Sub Middle_Check(BL As Integer)
     End If
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     
+
+
+    wb_SHUKEI.Worksheets("運転予定時間").Select    '最前面に表示_______________________________________________________________________________
+    wb_SHUKEI.Worksheets("運転予定時間").Activate
+    ' シート[運転予定時間]のE列最終行は336.0等と時間で表示されているが、中身は日。
+    If Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) <> Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)) Then
+        Call CMsg("シート「運転予定時間」のE列最終行とユニット合計時間が一致しません" & vbCrLf & Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) & " と " & Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)), 3, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+    Else
+        Call CMsg("一致、OK!!" & vbCrLf, 1, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+    End If
     
     wb_SHUKEI.Worksheets("配列").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("配列").Activate
@@ -162,6 +172,7 @@ Sub Middle_Check(BL As Integer)
         LineSta = 9
     End If
     LineSto = GetLastDataRow(ws, "B")
+    CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("A" & LineSta & ":A" & LineSto))
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("C" & LineSta & ":C" & LineSto))
     CheckAllDuplicatesByRange (wb_SHUKEI.Worksheets("利用時間(シフト)").Range("D" & LineSta & ":D" & LineSto))
     
@@ -548,6 +559,8 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
     
     For i = LineSta To LineSto
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
+        'Application.StatusBar = "Val:    " & i & "   " & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
+
         Cells(i, Retsu_GUN_HV_OFF).Interior.Color = RGB(0, 205, 0)
         Cells(i, Retsu_GUN_HV_ON).Interior.Color = RGB(0, 205, 0)
                 

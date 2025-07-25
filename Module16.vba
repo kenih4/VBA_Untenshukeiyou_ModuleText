@@ -6,7 +6,13 @@ Sub TEST_Button_Click()
     Debug.Print "TEST"
     MsgBox "TEST_Button_Click" & vbCrLf & " " & vbCrLf & "test" & vbCrLf & " " & vbCrLf & " ", vbInformation
    
+    Application.StatusBar = "TEST_Button_ClickÇµÇ‹ÇµÇΩÅB"
+
+    Application.VBE.MainWindow.Visible = True
     
+    MsgBox vbInformation
+
+    MsgBox vbExclamation
 
 
 End Sub
