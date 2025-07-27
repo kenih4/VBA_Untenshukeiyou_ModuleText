@@ -29,7 +29,7 @@ Sub Initial_Check(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SCSS\SCSS運転状況集計BL1.xlsm"
     Case 2
         Debug.Print "BL2"
-        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2TEST.xlsm"
     Case 3
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
@@ -141,7 +141,11 @@ Sub Middle_Check(BL As Integer)
     End If
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     
-
+    If ThisWorkbook.sheetS("手順").Range("D" & UNITROW).Value <> wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2").Value Then
+        If MsgBox("シート「利用時間（期間）」に入力されてるユニットと 違 い ま す けど、進めますか？", vbYesNo + vbQuestion, "BL" & BL) = vbNo Then
+            Exit Sub
+        End If
+    End If
 
     wb_SHUKEI.Worksheets("運転予定時間").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("運転予定時間").Activate
@@ -157,8 +161,8 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間（期間）").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間（期間）").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間（期間）")
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
-        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 3, ws)
     Else
         LineSta = 4
     End If
@@ -213,7 +217,7 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(シフト)").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間(シフト)").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間(シフト)")
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
     Else
         LineSta = 9
@@ -274,7 +278,7 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
 '    CheckForErrors (ws)
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　今ユニットだけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
     Else
         LineSta = 9
