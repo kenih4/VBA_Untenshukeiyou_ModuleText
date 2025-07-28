@@ -29,7 +29,7 @@ Sub Initial_Check(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SCSS\SCSS運転状況集計BL1.xlsm"
     Case 2
         Debug.Print "BL2"
-        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2TEST.xlsm"
+        BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
     Case 3
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
@@ -696,10 +696,11 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     Dim i As Integer
     Dim LineSta As Integer
     Dim LineSto As Integer
-    Dim Retsu_end As Integer
-    Dim Retsu_start As Integer
-    Dim Retsu_chouseizikan As Integer
-    Dim Retsu_total As Integer
+    Const Retsu_BL As Integer = 1
+    Const Retsu_end As Integer = 2
+    Const Retsu_start As Integer = 3
+    Const Retsu_chouseizikan As Integer = 4
+    Const Retsu_total As Integer = 5
     Dim result As Boolean
     Dim wb_name As String
 
@@ -715,11 +716,6 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     End Select
 
     MsgBox "マクロ「運転集計記録_Check」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & wb_name & vbCrLf & "のチェックです。" & vbCrLf & "確認します", vbInformation, "BL" & BL
-
-    Retsu_end = 2
-    Retsu_start = 3
-    Retsu_chouseizikan = 4
-    Retsu_total = 5
 
     Dim wb As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb = OpenBook(wb_name, True)    ' フルパスを指定
@@ -742,8 +738,8 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     LineSta = 3
     LineSto = GetLastDataRow(wb.Worksheets(sname), "B") ' wb.Worksheets(sname).Cells(Rows.Count, "B").End(xlUp).ROW
     
-    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("B" & LineSta & ":B" & LineSto))
-    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("C" & LineSta & ":C" & LineSto))
+'    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("B" & LineSta & ":B" & LineSto))
+'    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("C" & LineSta & ":C" & LineSto))
 
     For i = LineSta To LineSto
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
@@ -780,7 +776,10 @@ Sub 運転集計記録_Check(BL As String, sname As String)
                            
         'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
     Next
-        
+
+    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("B" & LineSta & ":B" & LineSto))
+    CheckAllDuplicatesByRange (wb.Worksheets(sname).Range("C" & LineSta & ":C" & LineSto))
+    
     Call Fin("チェック終了しました。" & vbCrLf & "", 1)
     Exit Sub ' 通常の処理が完了したらエラーハンドラをスキップ
 ErrorHandler:
