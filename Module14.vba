@@ -745,9 +745,9 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Rows(i).Interior.Color = RGB(0, 205, 0)
         
-'        If Not (Cells(i, Retsu_BL).Value = "BL2" Or Cells(i, Retsu_BL).Value = "BL3" Or IsEmpty(Cells(i, Retsu_BL).Value)) Then ' 空のセル（例えば、何も入力されていないセル）に対してIsEmptyを使用すると、通常はTrueを返します。しかし、数式が含まれている場合や、セルに空文字列が設定されている場合、IsEmptyはFalseを返すことがあります
-        If Not (Cells(i, Retsu_BL).Value = "BL2" Or Cells(i, Retsu_BL).Value = "BL3" Or Cells(i, Retsu_BL).Value = "") Then
-            Call CMsg("不正な値" & vbCrLf & "[" & Cells(i, Retsu_BL).Value & "]", vbCritical, Cells(i, Retsu_BL))
+        If Not (Cells(i, Retsu_BL).Value = "BL2" Or Cells(i, Retsu_BL).Value = "BL3" Or IsEmpty(Cells(i, Retsu_BL).Value)) Then ' 空のセル（例えば、何も入力されていないセル）に対してIsEmptyを使用すると、通常はTrueを返します。しかし、数式が含まれている場合や、セルに空文字列（""）が設定されている場合、IsEmptyはFalseを返す
+'        If Not (Cells(i, Retsu_BL).Value = "BL2" Or Cells(i, Retsu_BL).Value = "BL3" Or Cells(i, Retsu_BL).Value = "") Then
+            Call CMsg("不正な値" & vbCrLf & "[" & Cells(i, Retsu_BL).Value & "]" & vbCrLf & "空に見えるのに引っ掛かる場合、空の文字列（""""）が設定されてる、または数式が入ってる可能性があります。", vbCritical, Cells(i, Retsu_BL))
         End If
         
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_start)) Then
@@ -764,7 +764,7 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         
         If sname = "停止時間" Then
             If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' ユニット開始時刻より新しいところだけ確認
-                If Cells(i, Retsu_chouseiriyu) <> "" Then
+                If Cells(i, Retsu_chouseiriyu) <> "" Then ' If IsEmpty(Cells(i, Retsu_chouseiriyu)) Then
                     Call CMsg("列(調整理由)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseiriyu))
                 End If
             End If
