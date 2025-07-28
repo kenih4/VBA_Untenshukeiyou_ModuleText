@@ -5,7 +5,8 @@ Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Public Const UNITROW As Integer = 18
 Public Const CPATH As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\"
 Public Const WHICH As String = "SACLA"
-Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運転集計記録.xlsm"
+'Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運転集計記録.xlsm"
+Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運転集計記録TEST.xlsm"
 Public Const BNAME_KEIKAKU As String = CPATH & "計画時間.xlsx"
 Public Const BNAME_SOURCE As String = "C:\me\unten\マクロいろいろ.xlsm"
 Public Const OperationSummaryDir As String = "C:\me\unten\OperationSummary"

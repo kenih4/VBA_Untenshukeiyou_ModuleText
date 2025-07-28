@@ -696,11 +696,16 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     Dim i As Integer
     Dim LineSta As Integer
     Dim LineSto As Integer
-    Const Retsu_BL As Integer = 1
-    Const Retsu_end As Integer = 2
-    Const Retsu_start As Integer = 3
-    Const Retsu_chouseizikan As Integer = 4
-    Const Retsu_total As Integer = 5
+'    Const Retsu_BL As Integer = 1
+'    Const Retsu_start As Integer = 2
+'    Const Retsu_end As Integer = 3
+'    Const Retsu_chouseizikan As Integer = 4
+'    Const Retsu_total As Integer = 5
+    Const Retsu_BL As String = "A"
+    Const Retsu_start As String = "B"
+    Const Retsu_end As String = "C"
+    Const Retsu_chouseizikan As String = "D"
+    Const Retsu_total As String = "E"
     Dim result As Boolean
     Dim wb_name As String
 
@@ -743,27 +748,28 @@ Sub 運転集計記録_Check(BL As String, sname As String)
 
     For i = LineSta To LineSto
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
-        Cells(i, Retsu_end).Interior.Color = RGB(0, 205, 0)
-        Cells(i, Retsu_start).Interior.Color = RGB(0, 205, 0)
-        Cells(i, Retsu_total).Interior.Color = RGB(0, 205, 0)
+        Rows(i).Interior.Color = RGB(0, 205, 0)
+        
+        If Not (Cells(i, Retsu_BL).Value = "BL2" Or Cells(i, Retsu_BL).Value = "BL3" Or IsEmpty(Cells(i, Retsu_BL).Value)) Then
+            Call CMsg("不正な値" & vbCrLf & "です。", vbCritical, Cells(i, Retsu_BL))
+        End If
+        
+        If Not IsDateTimeFormatRegEx(Cells(i, Retsu_start)) Then
+            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, Retsu_start))
+        End If
         
         If Not IsDateTimeFormatRegEx(Cells(i, Retsu_end)) Then
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, Retsu_end))
         End If
-
-        If Not IsDateTimeFormatRegEx(Cells(i, Retsu_start)) Then
-            Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, Retsu_start))
-        End If
-                
-        
-        If (Cells(i, Retsu_start).Value - Cells(i, Retsu_end).Value) <= 0 Then
+       
+        If (Cells(i, Retsu_end).Value - Cells(i, Retsu_start).Value) <= 0 Then
             Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", vbCritical, Cells(i, Retsu_start))
         End If
         
         If sname = "停止時間" Then
             If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' ユニット開始時刻より新しいところだけ確認
                 If Cells(i, Retsu_chouseizikan) <> "" Then
-                    Call CMsg("列(調整時間)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseizikan))
+                    Call CMsg("列(調整理由)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseizikan))
                 End If
             End If
         End If
