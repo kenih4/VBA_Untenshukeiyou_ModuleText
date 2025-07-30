@@ -8,7 +8,7 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     Dim BNAME_SHUKEI As String
     Dim SNAME_KEIKAKU_BL As String
     Dim RANGE_GUN_HV_OFF As String
-    Dim COL_GUN_HV_OFF As Integer
+    Dim Col_GUN_HV_OFF As Integer
     Dim tr As Variant
     Dim result As Boolean
     Dim PasteSheet As Worksheet
@@ -53,13 +53,13 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2.xlsm"
         SNAME_KEIKAKU_BL = "bl2"
         RANGE_GUN_HV_OFF = "A3:C"
-        COL_GUN_HV_OFF = 1
+        Col_GUN_HV_OFF = 1
     Case 3
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
         SNAME_KEIKAKU_BL = "bl3"
         RANGE_GUN_HV_OFF = "G3:I"
-        COL_GUN_HV_OFF = 7
+        Col_GUN_HV_OFF = 7
     Case Else
         MsgBox "BLが不正です。終了します。" & vbCrLf & "！", Buttons:=vbInformation
         Exit Sub
@@ -88,7 +88,7 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     'コピーして貼り付け
     Set PasteSheet = wb_SHUKEI.Worksheets("GUN HV OFF時間記録")
     PasteRow = PasteSheet.Range("C5").End(xlDown).ROW + 1
-    result = CpPaste(wb_KEIKAKU.Worksheets("GUN HV OFF"), RANGE_GUN_HV_OFF, COL_GUN_HV_OFF, PasteSheet, PasteSheet.Cells(PasteRow, 3), Array(2, 6, 7), 3)    '「シート GUN HV OFF」をコピーして貼り付け
+    result = CpPaste(wb_KEIKAKU.Worksheets("GUN HV OFF"), RANGE_GUN_HV_OFF, Col_GUN_HV_OFF, PasteSheet, PasteSheet.Cells(PasteRow, 3), Array(2, 6, 7), 3)    '「シート GUN HV OFF」をコピーして貼り付け
 
     Set PasteSheet = wb_SHUKEI.Worksheets("運転予定時間")
     PasteRow = PasteSheet.Range("B3").End(xlDown).ROW + 1

@@ -511,7 +511,7 @@ Function GetLastDataRow(ws As Worksheet, colName As String) As Long
 '                Debug.Print i & "   KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
             Else
 '                Debug.Print i & "   Not KARA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " & ws.Cells(i, colNum).Value
-                GetLastDataRow = i ' 数式が入ってて、値が入ってる場合、ココだ
+                GetLastDataRow = i ' 値が入ってる場合、ココだ
                 Exit Function
             End If
 '        Else

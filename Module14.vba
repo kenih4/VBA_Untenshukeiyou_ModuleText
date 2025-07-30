@@ -153,7 +153,7 @@ Sub Middle_Check(BL As Integer)
     If Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) <> Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)) Then
         Call CMsg("シート「運転予定時間」のE列最終行とユニット合計時間が一致しません" & vbCrLf & Int(Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E")) & " と " & Int(ThisWorkbook.sheetS("手順").Range("I" & UNITROW)), vbCritical, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     Else
-        Call CMsg("一致、OK!!" & vbCrLf & vbCrLf & "ユニット合計時間が一致", vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
+        Call CMsg("OK!!" & vbCrLf & vbCrLf & "シート「運転予定時間」のE列最終行とユニット合計時間が一致", vbInformation, Cells(GetLastDataRow(wb_SHUKEI.Worksheets("運転予定時間"), "E"), "E"))
     End If
     
     
@@ -554,11 +554,19 @@ Sub 計画時間xlsx_Check(BL As Integer)
             Call CMsg("時間がおかしいぞ！　ユニット開始の時間より古い日時です。" & vbCrLf & "~~~", vbCritical, Cells(i, 3))
         End If
         
-        If InStr(Cells(i, 4).Value, "プログラム") > 0 Or InStr(Cells(i, 4).Value, "FCBT") > 0 Or InStr(Cells(i, 4).Value, "大学院") > 0 Or InStr(Cells(i, 4).Value, "基盤") > 0 Or InStr(Cells(i, 4).Value, "BL") > 0 Then
-            Call CMsg("変だぞ！！！" & vbCrLf & "FCBTの運転種別がユーザー運転になってる事を確認。" & vbCrLf & "基盤開発プログラムや、大学院生プログラムはBLstudyになります！！" & vbCrLf & "BL studeyが紛れ込んでるぞ！！", vbExclamation, Cells(i, 4))
+        If InStr(Cells(i, 1).Value, "ユーザー") > 0 Then ' ユーザー利用の確認
+            If InStr(Cells(i, 4).Value, "プログラム") > 0 Or InStr(Cells(i, 4).Value, "大学院") > 0 Or InStr(Cells(i, 4).Value, "基盤") > 0 Or InStr(Cells(i, 4).Value, "BL") > 0 Then
+               Call CMsg("変だぞ！！！" & vbCrLf & "ユーザーなのに。" & vbCrLf & "基盤開発プログラムや、大学院生プログラムは利用調整になります！！", vbCritical, Cells(i, 4))
+            End If
+        ElseIf InStr(Cells(i, 1).Value, "利用調整") > 0 Then ' 利用調整(BL studyなど)の確認
+            If InStr(Cells(i, 4).Value, "FCBT") > 0 Then
+               Call CMsg("変だぞ！！！" & vbCrLf & "利用調整(BL studyなど)なのに、" & vbCrLf & "FCBTが！！" & vbCrLf & "ユーザーになる筈です", vbCritical, Cells(i, 4))
+            End If
+        ElseIf InStr(Cells(i, 1).Value, "施設調整") > 0 Then ' 施設調整の確認
+        ElseIf InStr(Cells(i, 1).Value, "ユニット合計") > 0 Then
+        Else
+               Call CMsg("不正な値！！！" & vbCrLf & "", vbCritical, Cells(i, 1))
         End If
-                
-        'Debug.Print "Debug<<<   Cells(i, 4) [ " & Cells(i, 4) & " ]"
                 
         If i = LineSto Then
             If (Cells(i, 3).Value - Cells(i, 2).Value) <> 14 Then
@@ -594,8 +602,8 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
     Dim i As Integer
     Dim LineSta As Integer
     Dim LineSto As Integer
-    Dim Retsu_GUN_HV_OFF As Integer
-    Dim Retsu_GUN_HV_ON As Integer
+    Dim Col_GUN_HV_OFF As String
+    Dim Col_GUN_HV_ON As String
     Dim result As Boolean
 '    Dim pattern As String  使わない
 '    pattern = "^\d{4}/\d{1,2}/\d{1,2}[ ]{1,2}\d{1,2}:\d{1,2}:\d{1,2}$"  ' スペースの数も1つ、または2つでもマッチするようにしたいです。
@@ -638,14 +646,14 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
     LineSta = 3
     If BL = 2 Then
         LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "A").End(xlUp).ROW
-        Retsu_GUN_HV_OFF = 1
-        Retsu_GUN_HV_ON = 2
+        Col_GUN_HV_OFF = "A"
+        Col_GUN_HV_ON = "B"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("A" & LineSta & ":A" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("B" & LineSta & ":B" & LineSto))
     Else
         LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "G").End(xlUp).ROW
-        Retsu_GUN_HV_OFF = 7
-        Retsu_GUN_HV_ON = 8
+        Col_GUN_HV_OFF = "G"
+        Col_GUN_HV_ON = "H"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("G" & LineSta & ":G" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("H" & LineSta & ":H" & LineSto))
     End If
@@ -655,19 +663,19 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
         'Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         'Application.StatusBar = "Val:    " & i & "   " & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
 
-        Cells(i, Retsu_GUN_HV_OFF).Interior.Color = RGB(0, 205, 0)
-        Cells(i, Retsu_GUN_HV_ON).Interior.Color = RGB(0, 205, 0)
+        Cells(i, Col_GUN_HV_OFF).Interior.Color = RGB(0, 205, 0)
+        Cells(i, Col_GUN_HV_ON).Interior.Color = RGB(0, 205, 0)
                 
-        If Not IsDateTimeFormatRegEx(Cells(i, Retsu_GUN_HV_OFF)) Then
+        If Not IsDateTimeFormatRegEx(Cells(i, Col_GUN_HV_OFF)) Then
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 2))
         End If
 
-        If Not IsDateTimeFormatRegEx(Cells(i, Retsu_GUN_HV_ON)) Then
+        If Not IsDateTimeFormatRegEx(Cells(i, Col_GUN_HV_ON)) Then
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, 3))
         End If
                 
         
-        If (Cells(i, Retsu_GUN_HV_ON).Value - Cells(i, Retsu_GUN_HV_OFF).Value) <= 0 Then
+        If (Cells(i, Col_GUN_HV_ON).Value - Cells(i, Col_GUN_HV_OFF).Value) <= 0 Then
             Call CMsg("時間がおかしいぞ！　ENDの方が古い" & vbCrLf & "~~~", vbCritical, Cells(i, 3))
         End If
                
@@ -763,7 +771,7 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         End If
         
         If sname = "停止時間" Then
-            If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' ユニット開始時刻より新しいところだけ確認
+            If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' 列(調整理由)については、数が多いので、ユニット開始時刻より新しいところだけ確認
                 If Cells(i, Retsu_chouseiriyu) <> "" Then ' If IsEmpty(Cells(i, Retsu_chouseiriyu)) Then
                     Call CMsg("列(調整理由)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseiriyu))
                 End If
