@@ -219,6 +219,10 @@ Sub Middle_Check(BL As Integer)
     Set ws = wb_SHUKEI.Worksheets("利用時間(シフト)")
     If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+        If LineSta = -1 Then
+            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
+            LineSta = 9
+        End If
     Else
         LineSta = 9
     End If
@@ -280,6 +284,10 @@ Sub Middle_Check(BL As Integer)
 '    CheckForErrors (ws)
     If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+        If LineSta = -1 Then
+            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
+            LineSta = 9
+        End If
     Else
         LineSta = 9
     End If

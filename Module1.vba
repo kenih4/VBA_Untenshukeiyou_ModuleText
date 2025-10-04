@@ -90,7 +90,7 @@ Sub マクロいろいろxlsmからSACLA運転状況集計BLxlsmにマクロを流し込んで実行(BL As 
     'マクロmacroNameを片づける
     result = sourceWorkbookからtargetWorkbookにmoduleNameを流し込む(sourceWorkbook, targetWorkbook, "Module8", "RunBatchFile", True) ' 共通関数
     result = sourceWorkbookからtargetWorkbookにmoduleNameを流し込む(sourceWorkbook, targetWorkbook, dict(macroName), macroName, True)
-    
+    MsgBox "流し込んだマクロの片付けが終了しました。", Buttons:=vbInformation
     
     ' ワークブックを閉じる
     'sourceWorkbook.Close SaveChanges:=False

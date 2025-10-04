@@ -79,8 +79,13 @@ Sub Fault集計m(BL As Integer)
     '/追加部分----------------------------
     Dim UnitLine As Integer
     UnitLine = getLineNum(wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2"), 2, wb_SHUKEI.Worksheets(SNAME_FAULT))
-    wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Select
-    wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Copy
+    If UnitLine = -1 Then
+        MsgBox "ユニット「" & wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2") & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "本来なら、[" & SNAME_FAULT & "]シートのユニットの部分をコピーして、「SACLA運転状況集計まとめ.xlsm」に貼り付けるんですが、ないので、プログラムを終了します。" & vbCrLf & "後の手順を説明します。" & vbCrLf & "[SACLA運転状況集計まとめ.xlsm]のシート[Fault集計]を開いて「ユーザー運転無し」の行を手動で追加して下さい。", Buttons:=vbCritical
+        Exit Sub
+    Else
+        wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Select
+        wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Copy
+    End If
     
     If MsgBox("選択されてる部分をコピーしました" & vbCrLf & "次は、「SACLA運転状況集計まとめ.xlsm」の「Fault集計」の張り付けです。" & vbCrLf & "ファイルを開きますか？", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         

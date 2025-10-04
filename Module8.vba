@@ -231,7 +231,8 @@ Function getLineNum_RS(ByVal str As String, ByVal TARGET_COL As Integer, ByVal b
             Exit Function
         End If
     Next
-    Call Fin("@getLineNum_RS    文字列「" & str & "」と一致するセルは見つかりませんでした。", 3)
+'    Call Fin("@getLineNum_RS    文字列「" & str & "」と一致するセルは見つかりませんでした。", 3)
+    MsgBox "@getLineNum_RS    文字列「" & str & "」と一致するセルは見つかりませんでした。", vbExclamation, "警告"
 End Function
 
 
