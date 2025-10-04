@@ -135,6 +135,7 @@ Sub PDF_output_Click()
         ' PDFを開く
         pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
         shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
+'         shell """" & edgePath & """ --start-maximized """ & pdfPath & """", vbNormalFocus      [--start-maximized]オプションつけても最大化されず
         MsgBox "運転状況集計(" & myArray(i) & ").pdf" & vbCrLf & "を出力しました。", vbInformation
         
     Next i
