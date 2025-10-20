@@ -12,12 +12,14 @@ Sub Final_Check(BL As Integer)
     Dim BNAME_SHUKEI As String
     Dim DOWNTIME_ROW As Integer
     Dim UNIT As String
+    Dim UNIT_TotalDays As Double: UNIT_TotalDays = 0
     Dim LineSta As Integer
     Dim LineSto As Integer
     Dim Check_col_arr As Variant
     Dim result As Boolean
     Dim pattern As String
     Dim CantFindUnit As Integer: CantFindUnit = 0
+    
 
     MsgBox "マクロ「Final_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_MATOME & vbCrLf & "のチェックです。" & vbCrLf & "チェックするユニットを確認する為に一旦、SACLA運転状況集計BL*.xlsmを開きます", vbInformation, "BL" & BL
 
@@ -50,6 +52,7 @@ Sub Final_Check(BL As Integer)
     End Select
 
     UNIT = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+    UNIT_TotalDays = ThisWorkbook.sheetS("手順").Range("I" & UNITROW)
 
 '    'wb_SHUKEIを開く  [ユニット]を確認するため
 '    Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
@@ -85,7 +88,32 @@ Sub Final_Check(BL As Integer)
 
 
 
-    wb_MATOME.Worksheets("Fault集計").Activate    'これ大事
+
+
+    wb_MATOME.Worksheets(UNIT).Activate    '======================================================================================
+    MsgBox UNIT & "シートをチェックします。" & vbCrLf & "", vbInformation, "BL" & BL
+    If BL = 2 Then
+        LineSta = 8
+    Else
+        LineSta = 9
+    End If
+    If (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) <> UNIT_TotalDays Then
+        Call CMsg("トータル日数[施設調整+利用調整+利用運転]が予定と一致しません。", vbCritical, Range("F" & 8))
+    Else
+        Call CMsg("トータル日数[施設調整+利用調整+利用運転]が予定と合致", vbInformation, Range("F" & 8))
+    End If
+    
+    If (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) <> Range("E" & 8).Value Then
+        Call CMsg("総運転時間が[施設調整+利用調整+利用運転]の合計と一致しません。", vbCritical, Range("E" & 8))
+    Else
+        Call CMsg("総運転時間が[施設調整+利用調整+利用運転]の合計と一致", vbInformation, Range("E" & 8))
+    End If
+    
+
+
+
+
+    wb_MATOME.Worksheets("Fault集計").Activate    'これ大事======================================================================================
     MsgBox "Fault集計シートをチェックします。" & vbCrLf & "", vbInformation, "BL" & BL
     If BL = 2 Then
         LineSta = getLineNum("SACLA Fault間隔(BL2)", 2, wb_MATOME.Worksheets("Fault集計"))
