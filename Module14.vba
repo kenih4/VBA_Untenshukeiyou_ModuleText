@@ -584,11 +584,10 @@ Sub Œv‰æŠÔxlsx_Check(BL As Integer)
             If Cells(i, 4).Value <> "" Then
                 Call CMsg("‹ó—“‚Å‚ ‚é‚×‚«‚Æ‚±‚ë‚É’l‚ª“ü—Í‚Í‚¢‚Á‚Ä‚Ü‚·B" & vbCrLf & "~~~", vbCritical, Cells(i, 4))
             End If
-            
         End If
+        
 
     Next
-
     
     Call CheckScheduleContinuity(wb_KEIKAKU.Worksheets("bl" & BL))
 
