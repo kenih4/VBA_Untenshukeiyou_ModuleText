@@ -97,16 +97,16 @@ Sub Final_Check(BL As Integer)
     Else
         LineSta = 9
     End If
-    If (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) <> UNIT_TotalDays Then
-        Call CMsg("ƒg[ƒ^ƒ‹“ú”[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚ª—\’è‚Æˆê’v‚µ‚Ü‚¹‚ñB", vbCritical, Range("F" & 8))
+    If UNIT_TotalDays <> Range("E" & 8).Value Then
+        Call CMsg("—\’è‚Æ‘‰^“]ŠÔ‚ªˆê’v‚µ‚Ü‚¹‚ñB", vbCritical, Range("E" & 8))
     Else
-        Call CMsg("ƒg[ƒ^ƒ‹“ú”[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚ª—\’è‚Æ‡’v", vbInformation, Range("F" & 8))
+        Call CMsg("—\’è‚Æ‘‰^“]ŠÔ‚ª‡’v", vbInformation, Range("E" & 8))
     End If
     
-    If (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) <> Range("E" & 8).Value Then
-        Call CMsg("‘‰^“]ŠÔ‚ª[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚Ì‡Œv‚Æˆê’v‚µ‚Ü‚¹‚ñB", vbCritical, Range("E" & 8))
+    If Range("E" & 8).Value <> (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) Then
+        Call CMsg("‘‰^“]ŠÔ‚ª[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚Ì‡Œv‚Æˆê’v‚µ‚Ü‚¹‚ñB", vbCritical, Range("F" & 8))
     Else
-        Call CMsg("‘‰^“]ŠÔ‚ª[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚Ì‡Œv‚Æˆê’v", vbInformation, Range("E" & 8))
+        Call CMsg("‘‰^“]ŠÔ‚ª[{İ’²®+—˜—p’²®+—˜—p‰^“]]‚Ì‡Œv‚Æ‡’v", vbInformation, Range("F" & 8))
     End If
     
 
