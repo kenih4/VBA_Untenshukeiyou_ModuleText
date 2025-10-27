@@ -2,7 +2,6 @@ Module: Module15
 
 
 
-
 Sub SACLA運転集計記録の確認()
 '    If Check_checkbox_status("CheckBox_Untenshukeikiroku") = True Then
 '        Debug.Print "チェックが入ってたので終了"
@@ -170,4 +169,32 @@ Sub Clear_Click()
             End If
         End If
     Next chk
+End Sub
+
+
+
+
+Sub 作成前のバックアップ取得()
+    Dim result As Boolean
+    Dim createdPath As String
+    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "_Auto")
+    If createdPath <> "" Then
+'        MsgBox "フォルダ作成成功：" & createdPath
+        result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL2.xlsm", createdPath & "\SACLA運転状況集計BL2.xlsm")
+        result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL3.xlsm", createdPath & "\SACLA運転状況集計BL3.xlsm")
+        result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm", createdPath & "\SACLA運転状況集計まとめ.xlsm")
+        
+        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL2.xlsm")
+        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL3.xlsm")
+        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計まとめ.xlsm")
+        
+        If result Then
+'            MsgBox "コピー成功！"
+        Else
+            MsgBox "コピー失敗…", vbExclamation
+        End If
+    Else
+        MsgBox "フォルダ作成に失敗しました。", vbExclamation
+    End If
+    MsgBox "作成前のバックアップ取得、完了", vbInformation
 End Sub

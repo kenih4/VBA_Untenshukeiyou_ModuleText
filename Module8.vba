@@ -593,3 +593,68 @@ Sub CheckAllDuplicatesByRange(targetRange As Range)
     End If
 End Sub
 
+
+
+
+'=== 新規フォルダ作成 ======================================
+Function CreateFolderWithAutoRename(parentPath As String, newFolderName As String) As String
+    Dim fullPath As String
+    Dim counter As Long
+    Dim candidateName As String
+
+    ' 最初の候補
+    candidateName = newFolderName
+    fullPath = parentPath & "\" & candidateName
+
+    ' フォルダが存在する限り、連番を付けて試す
+    Do While Dir(fullPath, vbDirectory) <> ""
+        counter = counter + 1
+        candidateName = newFolderName & "_(" & counter & ")"
+        fullPath = parentPath & "\" & candidateName
+    Loop
+
+    On Error GoTo ErrorHandler
+    MkDir fullPath
+    CreateFolderWithAutoRename = fullPath
+    Exit Function
+
+ErrorHandler:
+    CreateFolderWithAutoRename = vbNullString  ' 作成失敗時は空文字を返す
+End Function
+
+
+
+'=== ファイルコピー ======================================
+Function CopyFileSafely(sourcePath As String, destinationPath As String) As Boolean
+    On Error GoTo ErrorHandler
+
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    ' コピー実行（Trueで上書き許可）
+    fso.CopyFile sourcePath, destinationPath, True
+    CopyFileSafely = True
+    Exit Function
+
+ErrorHandler:
+    CopyFileSafely = False
+End Function
+
+
+'=== 読み取り専用属性を設定 ======================================
+Function SetFileReadOnly(filePath As String) As Boolean
+    On Error GoTo ErrorHandler
+
+    If Dir(filePath, vbNormal) = "" Then
+        SetFileReadOnly = False  ' ファイルが存在しない
+        Exit Function
+    End If
+
+    SetAttr filePath, vbReadOnly
+    SetFileReadOnly = True
+    Exit Function
+
+ErrorHandler:
+    SetFileReadOnly = False
+End Function
+
