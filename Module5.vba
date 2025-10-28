@@ -165,7 +165,7 @@ Sub Final_Check(BL As Integer)
                         End If
 
                         If col = 9 And (StrComp(Right(tc.Value, 1), "G", vbBinaryCompare) = 0 = False) Then  ' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
-                            Call CMsg("ユーザー名が入る筈なのにGがありませんよ", vbCritical, tc)
+                            Call CMsg("ユーザー名(末尾の1文字が 「G」 )が入るべきですが。確認した方がいいです。", vbExclamation, tc)
                         End If
 
                     End If
@@ -273,7 +273,7 @@ Sub Final_Check(BL As Integer)
                         Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
                         If col = 5 And (wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value = "total" And (StrComp(Right(wb_MATOME.Worksheets("まとめ ").Cells(j, 9).Value, 1), "G", vbBinaryCompare) = 0) = False) Then  '' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
-                            Call CMsg("ユーザー名が入るべきですが。。確認した方がいいです。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
+                            Call CMsg("ユーザー名(末尾の1文字が 「G」 )が入るべきですが。確認した方がいいです。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
                         End If
 
                         If col = 3 Or col = 4 Then
@@ -291,6 +291,18 @@ Sub Final_Check(BL As Integer)
                         If col = 6 And (tc.Value <= 0.8 Or tc.Value > 1 Or Not IsNumeric(tc.Value)) Then  '利用率%
                             Call CMsg("利用率低い。または、範囲外 or 文字列   確認した方がいいです。", vbCritical, tc)
                         End If
+                        
+                        If col = 7 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total" Then
+                            If wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = 0 Then
+                                If IsBlankCell(wb_MATOME.Worksheets("まとめ ").Cells(j, 9)) = False Then '
+                                    Call CMsg("[ビーム調整時間]が0なのに、調整理由が入力されています。確認した方がいいです。", vbCritical, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
+                                End If
+                            Else
+                                If IsBlankCell(wb_MATOME.Worksheets("まとめ ").Cells(j, 9)) = True Then '
+                                    Call CMsg("[ビーム調整時間]が発生してるのに、調整理由が入力されているべきですが。確認した方がいいです。", vbCritical, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
+                                End If
+                            End If
+                        End If
 
                     End If
                 Next col
@@ -301,7 +313,7 @@ Sub Final_Check(BL As Integer)
     Next
 
 
-
+Exit Sub
 
 
     MsgBox "まとめシートの(c)のチェック。" & vbCrLf & "", vbInformation, "BL" & BL

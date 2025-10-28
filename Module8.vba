@@ -658,3 +658,9 @@ ErrorHandler:
     SetFileReadOnly = False
 End Function
 
+
+'=== ƒZƒ‹‚ª‹ó—“‚©‚Ç‚¤‚©”»’è ======================================
+Function IsBlankCell(rng As Range) As Boolean
+    IsBlankCell = Trim(rng.Value) = ""
+End Function
+
