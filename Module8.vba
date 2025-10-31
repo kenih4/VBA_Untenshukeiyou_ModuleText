@@ -459,11 +459,11 @@ Sub ExportModulesToSeparateTextFiles()
     Else
         Dim vscodePath As String
         Dim folderPath As String
-        Dim command As String
+        Dim Command As String
         vscodePath = "C:\Users\kenic\AppData\Local\Programs\Microsoft VS Code\Code.exe"
         folderPath = "C:\Users\kenic\Dropbox\gitdir\VBA_Untenshukeiyou_ModuleText"
-        command = """" & vscodePath & """ """ & folderPath & """"
-        shell command, vbNormalFocus
+        Command = """" & vscodePath & """ """ & folderPath & """"
+        shell Command, vbNormalFocus
     End If
         
 End Sub
@@ -663,4 +663,32 @@ End Function
 Function IsBlankCell(rng As Range) As Boolean
     IsBlankCell = Trim(rng.Value) = ""
 End Function
+
+
+
+
+'=== 実行したいBashコマンドを引数 CommandsToRun で受け取るプロシージャ ======================================
+Sub ExecuteGitBashCommand(ByVal CommandsToRun As String)
+   
+    Dim GitBashPath As String
+    Dim FullCommand As String
+    
+    GitBashPath = "C:\Program Files\Git\bin\bash.exe"
+    
+    ' Git Bashに渡す完全なコマンド文字列を作成します
+    ' --login -c の後に、引数で渡されたコマンド文字列を二重引用符で囲んで渡します
+    FullCommand = GitBashPath & " --login -c """ & CommandsToRun & """"
+    
+    On Error GoTo ErrorHandler
+    
+    ' シェルを実行します (ウィンドウを通常サイズで表示: 1)
+    ' 0: 非表示, 1: 通常表示, 2: 最小化, 3: 最大化
+    shell FullCommand, 1
+    
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Git Bashの実行に失敗しました。パスを確認してください。", vbCritical
+End Sub
+
 

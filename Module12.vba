@@ -5,7 +5,7 @@ Function RunPythonScript(scriptPath As String, workDir As String) As Boolean
     On Error GoTo ErrorHandler
     RunPythonScript = False
 '    Dim scriptPath As String
-    Dim command As String
+    Dim Command As String
     Dim buttonName As String
 '    Const pythonExe As String = "python"
     Dim pythonExe As String
@@ -33,14 +33,14 @@ Function RunPythonScript(scriptPath As String, workDir As String) As Boolean
     MsgBox "python " & scriptPath & "を" & vbCrLf & "実行します。", Buttons:=vbInformation
     
     ' コマンドを組み立て：まず指定フォルダに移動し、その後Pythonを実行
-    command = "cmd.exe /c cd /d " & Chr(34) & workDir & Chr(34) & " && " & pythonExe & " " & workDir & "\" & scriptPath
+    Command = "cmd.exe /c cd /d " & Chr(34) & workDir & Chr(34) & " && " & pythonExe & " " & workDir & "\" & scriptPath
     
     'Shell command, vbNormalFocus ' Shell関数でPythonスクリプトを実行 終了を待たない
     
     Dim shell As Object
     Dim exitCode As Long
     Set shell = CreateObject("WScript.Shell")
-    exitCode = shell.RUN(command, vbMaximizedFocus, True)   ' WScript.ShellのRunメソッドでコマンドを実行し、終了を待つ
+    exitCode = shell.RUN(Command, vbMaximizedFocus, True)   ' WScript.ShellのRunメソッドでコマンドを実行し、終了を待つ
     If exitCode = 0 Then
         RunPythonScript = True
         Call Fin("Pythonスクリプトが正常に終了しました。 " & vbCrLf & "[" & scriptPath & "]", 1)

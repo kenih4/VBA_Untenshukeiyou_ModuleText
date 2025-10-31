@@ -198,3 +198,23 @@ Sub 作成前のバックアップ取得()
     End If
     MsgBox "作成前のバックアップ取得、完了", vbInformation
 End Sub
+
+
+
+
+Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット開始月()
+    Dim Command As String
+    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
+               "./excelgrep_by_XMLparse.sh SACLA/2025_" & Month(ThisWorkbook.sheetS("手順").Range("E" & UNITROW)) & ".xlsm '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
+               "read -p '処理が完了しました。Enterキーを押すと終了します...'"
+    ExecuteGitBashCommand Command
+End Sub
+
+Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット終了月()
+    Dim Command As String
+    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
+               "./excelgrep_by_XMLparse.sh SACLA/2025_" & Month(ThisWorkbook.sheetS("手順").Range("G" & UNITROW)) & ".xlsm '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'"
+    ExecuteGitBashCommand Command
+End Sub
+
+
