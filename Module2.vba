@@ -114,8 +114,8 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     latest_unit = latest_unit + 1
     newunit = arr(0) + "-" + CStr(latest_unit)
     Debug.Print "newunit: " & newunit
-    If newunit <> ThisWorkbook.sheetS("手順").Range("D" & UNITROW) Then
-        MsgBox "ユニット名が連続になりませんけど。今から出力しようとしているユニット名：" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & vbCrLf & "  newunit: " & newunit, Buttons:=vbExclamation
+    If newunit <> ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) Then
+        MsgBox "ユニット名が連続になりませんけど。今から出力しようとしているユニット名：" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & vbCrLf & "  newunit: " & newunit, Buttons:=vbExclamation
     Else
         MsgBox "OK!" & vbCrLf & "新しいユニット名合致!!!", Buttons:=vbInformation
     End If

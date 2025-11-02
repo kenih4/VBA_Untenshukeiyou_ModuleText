@@ -2,7 +2,10 @@ Module: Module8
 Option Explicit ' 未定義の変数は使用できないように
 Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
-Public Const UNITROW As Integer = 18
+Public Const UNITROW As Integer = 21
+Public Const UNITNAME As String = "D"
+Public Const BEGIN_COL As String = "E"
+Public Const END_COL As String = "G"
 Public Const CPATH As String = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\"
 Public Const WHICH As String = "SACLA"
 Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運転集計記録.xlsm"
@@ -12,6 +15,9 @@ Public Const OperationSummaryDir As String = "C:\me\unten\OperationSummary"
 Public Const BNAME_MATOME As String = CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm"
 
 Public Const edgePath As String = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+
+Public Const TARGET_PATH  As String = "\\saclaoprfs01.spring8.or.jp\log_note\SACLA\operation_log"
+Public Const DIST_PATH  As String = "C:\Users\kenic\Documents\operation_log_NEW\SACLA"
 
 
 'ブックを開く ==============================================================================================================================

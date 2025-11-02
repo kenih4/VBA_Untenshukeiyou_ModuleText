@@ -268,3 +268,24 @@ Function Find_targetcell_and_paste(ByVal Category As String, ByVal TARGET_COL As
         
 End Function
 
+
+
+
+'==============================================================================================================================
+Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Nen As Integer, Tsuki As Integer)
+    Dim Command As String
+    Dim LogNOTE As String
+    Dim result As Boolean
+    LogNOTE = Nen & "_" & Tsuki & ".xlsm"
+'    MsgBox TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE
+    result = CopyFileSafely(TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE, DIST_PATH & "\" & LogNOTE)
+    If Not result Then
+        MsgBox "コピー失敗…　終了します。", vbCritical
+        End If
+'    Exit Sub
+    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
+               "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
+               "read -p '処理が完了しました。Enterキーを押すと終了します...'"
+    ExecuteGitBashCommand Command
+End Sub
+

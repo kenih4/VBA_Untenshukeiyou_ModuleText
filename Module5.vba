@@ -8,7 +8,7 @@ Sub Final_Check(BL As Integer)
 
     Dim tc As Variant
     Dim i, j As Integer
-    Dim col As Variant
+    Dim COL As Variant
     Dim BNAME_SHUKEI As String
     Dim DOWNTIME_ROW As Integer
     Dim UNIT As String
@@ -51,7 +51,7 @@ Sub Final_Check(BL As Integer)
         End
     End Select
 
-    UNIT = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+    UNIT = ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)
     UNIT_TotalDays = ThisWorkbook.sheetS("手順").Range("I" & UNITROW)
 
 '    'wb_SHUKEIを開く  [ユニット]を確認するため
@@ -133,43 +133,43 @@ Sub Final_Check(BL As Integer)
             For j = i To i + wb_MATOME.Worksheets("Fault集計").Cells(i, 2).MergeArea.Rows.Count - 1
 
                 Check_col_arr = Array(3, 4, 5, 6, 7, 8, 9)  'Check_col_arr = Array(3, 4, 7, 8) ' チェックする列の値を配列にセット  シフト開始、終了、Faul間隔、Faul回数
-                For Each col In Check_col_arr
-                    Set tc = wb_MATOME.Worksheets("Fault集計").Cells(j, col)
+                For Each COL In Check_col_arr
+                    Set tc = wb_MATOME.Worksheets("Fault集計").Cells(j, COL)
                     tc.Select
                     tc.Interior.Color = RGB(0, 255, 0)
                     'Sleep 100    ' msec
                     If tc.MergeArea.Columns.Count > 1 Or tc.MergeArea.Rows(1).ROW <> j Then
-                        Debug.Print "水平方向に結合されてる、または、垂直方向に結合されていて先頭です。" & i & "   " & j & "   " & col
+                        Debug.Print "水平方向に結合されてる、または、垂直方向に結合されていて先頭です。" & i & "   " & j & "   " & COL
                     Else
                         If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
-                        Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
+                        Debug.Print i & "   " & j & "   " & COL & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
-                        If col = 3 Or col = 4 Then    ' シフト時間
+                        If COL = 3 Or COL = 4 Then    ' シフト時間
                             result = CheckDateTimeFormat(tc)
                         End If
 
-                        If col = 5 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
+                        If COL = 5 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
                             Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
     
-                        If col = 6 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
+                        If COL = 6 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
                             Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
 
-                        If col = 7 Then  'Fault間隔時間
+                        If COL = 7 Then  'Fault間隔時間
                             result = CheckTimeFormat(tc)
                         End If
 
-                        If col = 8 And (tc.Value < 0 Or Not IsNumeric(tc.Value)) Then  'Fault回数
+                        If COL = 8 And (tc.Value < 0 Or Not IsNumeric(tc.Value)) Then  'Fault回数
                             Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                         End If
 
-                        If col = 9 And (StrComp(Right(tc.Value, 1), "G", vbBinaryCompare) = 0 = False) Then  ' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
+                        If COL = 9 And (StrComp(Right(tc.Value, 1), "G", vbBinaryCompare) = 0 = False) Then  ' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
                             Call CMsg("ユーザー名(末尾の1文字が 「G」 )が入るべきですが。確認した方がいいです。", vbExclamation, tc)
                         End If
 
                     End If
-                Next col
+                Next COL
             Next
             Exit For
         End If
@@ -195,30 +195,30 @@ Sub Final_Check(BL As Integer)
             End If
 
             Check_col_arr = Array(3, 5, 6, 7, 9, 10, 11, 12)    ' チェックする列の値を配列にセット
-            For Each col In Check_col_arr
-                If col >= 9 Then
-                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, col)
+            For Each COL In Check_col_arr
+                If COL >= 9 Then
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, COL)
                 Else
-                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(i, col)
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(i, COL)
                 End If
                 tc.Select
                 tc.Interior.Color = RGB(0, 255, 0)
                 'Sleep 100    ' msec
                 If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
-                Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
+                Debug.Print i & "   " & j & "   " & COL & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
-                If col = 3 Then    ' 日付
+                If COL = 3 Then    ' 日付
                     pattern = "^\d{4}/\d{2}/\d{2} \d{2}:\d{2} - \d{4}/\d{2}/\d{2} \d{2}:\d{2}$"    '       別の書式（例: YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM） pattern = "^\d{4}-\d{2}-\d{2} \d{2}:\d{2} - \d{4}-\d{2}-\d{2} \d{2}:\d{2}$"
                     If Not IsValidFormat(tc, pattern) Then
                         Call CMsg("セル " & tc.Address(False, False) & " の値が正しい形式ではありません。" & vbCrLf & "正しい形式: YYYY/MM/DD HH:MM - YYYY/MM/DD HH:MM", vbCritical, tc)
                     End If
                 End If
 
-                If col = 5 Or col = 6 Or col = 7 Or col = 9 Or col = 10 Or col = 11 Or col = 12 Then    '総運転時間(計画）(計画, ダウンタイム), 利用調整運転(計画, ダウンタイム) , 利用運転(計画, ダウンタイム)
+                If COL = 5 Or COL = 6 Or COL = 7 Or COL = 9 Or COL = 10 Or COL = 11 Or COL = 12 Then    '総運転時間(計画）(計画, ダウンタイム), 利用調整運転(計画, ダウンタイム) , 利用運転(計画, ダウンタイム)
                     result = CheckTimeFormat(tc)
                 End If
 
-            Next col
+            Next COL
 
 
             If wb_MATOME.Worksheets("まとめ ").Cells(DOWNTIME_ROW, 9).Value <= 0 Then
@@ -260,39 +260,39 @@ Sub Final_Check(BL As Integer)
             Cells(i, 2).Select
             Cells(i, 2).Interior.Color = RGB(0, 255, 0)
             For j = i To i + wb_MATOME.Worksheets("まとめ ").Cells(i, 2).MergeArea.Rows.Count - 1
-                For Each col In Check_col_arr
-                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, col)
+                For Each COL In Check_col_arr
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, COL)
                     tc.Select
                     tc.Interior.Color = RGB(0, 255, 0)
                     'Sleep 100    ' msec
                     If tc.MergeArea.Columns.Count > 1 Then
-                        Debug.Print "水平方向に結合されています。" & i & "   " & j & "   " & col & "     tc.Value = " & tc.Value & "  " & tc.MergeArea.Columns.Count
+                        Debug.Print "水平方向に結合されています。" & i & "   " & j & "   " & COL & "     tc.Value = " & tc.Value & "  " & tc.MergeArea.Columns.Count
                     Else
 
                         If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
-                        Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
+                        Debug.Print i & "   " & j & "   " & COL & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
-                        If col = 5 And (wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value = "total" And (StrComp(Right(wb_MATOME.Worksheets("まとめ ").Cells(j, 9).Value, 1), "G", vbBinaryCompare) = 0) = False) Then  '' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
+                        If COL = 5 And (wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value = "total" And (StrComp(Right(wb_MATOME.Worksheets("まとめ ").Cells(j, 9).Value, 1), "G", vbBinaryCompare) = 0) = False) Then  '' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
                             Call CMsg("ユーザー名(末尾の1文字が 「G」 )が入るべきですが。確認した方がいいです。", vbExclamation, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
                         End If
 
-                        If col = 3 Or col = 4 Then
+                        If COL = 3 Or COL = 4 Then
                             result = CheckDateTimeFormat(tc)
                         End If
 
-                        If col = 5 Or col = 7 Or col = 8 Then
+                        If COL = 5 Or COL = 7 Or COL = 8 Then
                             result = CheckTimeFormat(tc)
                         End If
     
-                        If (col = 5 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total") And (tc.Value <= 0 Or tc.Value > 0.5 Or Not IsNumeric(tc.Value)) Then
+                        If (COL = 5 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total") And (tc.Value <= 0 Or tc.Value > 0.5 Or Not IsNumeric(tc.Value)) Then
                             Call CMsg("範囲外かもしれないです。確認した方がいいです。", vbCritical, tc)
                         End If
 
-                        If col = 6 And (tc.Value <= 0.8 Or tc.Value > 1 Or Not IsNumeric(tc.Value)) Then  '利用率%
+                        If COL = 6 And (tc.Value <= 0.8 Or tc.Value > 1 Or Not IsNumeric(tc.Value)) Then  '利用率%
                             Call CMsg("利用率低い。または、範囲外 or 文字列   確認した方がいいです。", vbCritical, tc)
                         End If
                         
-                        If col = 7 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total" Then
+                        If COL = 7 And wb_MATOME.Worksheets("まとめ ").Cells(j, 3).Value <> "total" Then
                             If wb_MATOME.Worksheets("まとめ ").Cells(j, 7).Value = 0 Then
                                 If IsBlankCell(wb_MATOME.Worksheets("まとめ ").Cells(j, 9)) = False Then '
                                     Call CMsg("[ビーム調整時間]が0なのに、調整理由が入力されています。確認した方がいいです。", vbCritical, wb_MATOME.Worksheets("まとめ ").Cells(j, 9))
@@ -305,7 +305,7 @@ Sub Final_Check(BL As Integer)
                         End If
 
                     End If
-                Next col
+                Next COL
 
             Next
             Exit For
@@ -336,24 +336,24 @@ Exit Sub
             Cells(i, 2).Interior.Color = RGB(0, 255, 0)
             For j = i To i + wb_MATOME.Worksheets("まとめ ").Cells(i, 2).MergeArea.Rows.Count - 1
 
-                For col = 3 To 7
-                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, col)
+                For COL = 3 To 7
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, COL)
                     tc.Select
                     tc.Interior.Color = RGB(0, 255, 0)
 
                     'Sleep 100    ' msec
                     If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
-                    Debug.Print i & "   " & j & "   " & col & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
+                    Debug.Print i & "   " & j & "   " & COL & "     tc.Value = " & tc.Value    '!!!!!!!!!  セルが#DIV/0!だと ここ、表示で失敗するので、その前でIsCellErrorでチェックする
 
-                    If col = 3 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
+                    If COL = 3 And (tc.Value <= 0 Or tc.Value > 8.2 Or Not IsNumeric(tc.Value)) Then  'エネルギー
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
-                    If col = 4 And (tc.Value <= 0 Or tc.Value > 60 Or Not IsNumeric(tc.Value)) Then  '繰返し
+                    If COL = 4 And (tc.Value <= 0 Or tc.Value > 60 Or Not IsNumeric(tc.Value)) Then  '繰返し
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
     
-                    If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
+                    If COL = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
     
 '                        If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then
@@ -367,11 +367,11 @@ Exit Sub
 
                     End If
 
-                    If col = 6 And (tc.Value <= 0 Or tc.Value > 2000 Or Not IsNumeric(tc.Value)) Then  '強度
+                    If COL = 6 And (tc.Value <= 0 Or tc.Value > 2000 Or Not IsNumeric(tc.Value)) Then  '強度
                         Call CMsg("範囲外 or 非数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
-                    If col = 7 And (IsNumeric(tc.Value)) Then  '備考
+                    If COL = 7 And (IsNumeric(tc.Value)) Then  '備考
                         Call CMsg("数値です。確認した方がいいです。", vbCritical, tc)
                     End If
 
@@ -423,7 +423,7 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
 
     Dim tc As Variant
     Dim i, j As Integer
-    Dim col As Variant
+    Dim COL As Variant
     Dim BNAME_SHUKEI As String
     Dim DOWNTIME_ROW As Integer
     Dim UNIT As String
@@ -453,7 +453,7 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
         End
     End Select
 
-    UNIT = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+    UNIT = ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)
 
     ' wb_MATOMEを開く
     Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
@@ -479,11 +479,11 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
         If wb_MATOME.Worksheets("まとめ ").Cells(i, 2).Value = UNIT Then
             Debug.Print "この行　i = " & i & " が、ユニット " & Cells(i, 2).Value
             For j = i To i + wb_MATOME.Worksheets("まとめ ").Cells(i, 2).MergeArea.Rows.Count - 1
-                For col = 3 To 7
-                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, col)
+                For COL = 3 To 7
+                    Set tc = wb_MATOME.Worksheets("まとめ ").Cells(j, COL)
                     tc.Select
 
-                    If col = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
+                    If COL = 5 And (tc.Value <= 0 Or tc.Value > 25 Or Not IsNumeric(tc.Value)) Then  '波長
     
                         If InStr(1, tc.Value, "+", vbTextCompare) > 0 Then
                             MsgBox "セルには「+」が含まれています。"

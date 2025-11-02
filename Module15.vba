@@ -1,5 +1,5 @@
 Module: Module15
-
+Option Explicit
 
 
 Sub SACLA運転集計記録の確認()
@@ -40,7 +40,7 @@ Sub 計画時間xlsxを出力_Click()
     
     Dim fileNum As Integer
 
-    If MsgBox("出力するユニットは" & vbCrLf & "   「 " & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & " 」" & vbCrLf & ThisWorkbook.sheetS("手順").Range("E" & UNITROW) & "    ～　　" & vbCrLf & ThisWorkbook.sheetS("手順").Range("G" & UNITROW) & vbCrLf & "開始しますか？", vbYesNo) = vbNo Then Exit Sub
+    If MsgBox("出力するユニットは" & vbCrLf & "   「 " & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & " 」" & vbCrLf & ThisWorkbook.sheetS("手順").Range(BEGIN_COL & UNITROW) & "    ～　　" & vbCrLf & ThisWorkbook.sheetS("手順").Range(END_COL & UNITROW) & vbCrLf & "開始しますか？", vbYesNo) = vbNo Then Exit Sub
     
     fileNum = FreeFile
     Open OperationSummaryDir & "\dt_beg.txt" For Output As #fileNum
@@ -177,24 +177,23 @@ End Sub
 Sub 作成前のバックアップ取得()
     Dim result As Boolean
     Dim createdPath As String
-    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "_Auto")
+    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_作成前")
     If createdPath <> "" Then
 '        MsgBox "フォルダ作成成功：" & createdPath
+        result = CopyFileSafely(CPATH & WHICH & "\SACLA運転集計記録.xlsm", createdPath & "\SACLA運転集計記録.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL2.xlsm", createdPath & "\SACLA運転状況集計BL2.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL3.xlsm", createdPath & "\SACLA運転状況集計BL3.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm", createdPath & "\SACLA運転状況集計まとめ.xlsm")
+        If Not result Then
+            MsgBox "コピー失敗…", vbCritical
+        End If
         
+        result = SetFileReadOnly(createdPath & "\SACLA運転集計記録.xlsm")
         result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL2.xlsm")
         result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL3.xlsm")
         result = SetFileReadOnly(createdPath & "\SACLA運転状況集計まとめ.xlsm")
-        
-        If result Then
-'            MsgBox "コピー成功！"
-        Else
-            MsgBox "コピー失敗…", vbExclamation
-        End If
     Else
-        MsgBox "フォルダ作成に失敗しました。", vbExclamation
+        MsgBox "フォルダ作成に失敗しました。", vbCritical
     End If
     MsgBox "作成前のバックアップ取得、完了", vbInformation
 End Sub
@@ -202,19 +201,16 @@ End Sub
 
 
 
-Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット開始月()
-    Dim Command As String
-    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
-               "./excelgrep_by_XMLparse.sh SACLA/2025_" & Month(ThisWorkbook.sheetS("手順").Range("E" & UNITROW)) & ".xlsm '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
-               "read -p '処理が完了しました。Enterキーを押すと終了します...'"
-    ExecuteGitBashCommand Command
+
+Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット開始月_Click()
+    Call ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Year(ThisWorkbook.sheetS("手順").Range(BEGIN_COL & UNITROW)), Month(ThisWorkbook.sheetS("手順").Range(BEGIN_COL & UNITROW)))
 End Sub
 
-Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット終了月()
-    Dim Command As String
-    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
-               "./excelgrep_by_XMLparse.sh SACLA/2025_" & Month(ThisWorkbook.sheetS("手順").Range("G" & UNITROW)) & ".xlsm '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'"
-    ExecuteGitBashCommand Command
+Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット終了月_Click()
+    Call ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Year(ThisWorkbook.sheetS("手順").Range(END_COL & UNITROW)), Month(ThisWorkbook.sheetS("手順").Range(END_COL & UNITROW)))
 End Sub
+
+
+
 
 

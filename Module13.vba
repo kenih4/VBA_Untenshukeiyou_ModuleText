@@ -118,7 +118,7 @@ Sub PDF_output_Click()
     Dim sheet As Worksheet
     myArray(0) = "まとめ " 'シート名　まとめ シートには半角スペースがあるので注意
     myArray(1) = "Fault集計"
-    myArray(2) = ThisWorkbook.sheetS("手順").Range("D" & UNITROW)
+    myArray(2) = ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)
     
     For i = LBound(myArray) To UBound(myArray)
 '        MsgBox "要素 " & i & ": " & myArray(i)

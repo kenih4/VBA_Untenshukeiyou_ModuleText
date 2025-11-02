@@ -72,7 +72,7 @@ Sub Initial_Check(BL As Integer)
 '    If Not SheetExists(wb_SHUKEI, sname) Then
 '        MsgBox "シートが存在しません。" & vbCrLf & sname & " 終了します。", Buttons:=vbExclamation
 '    Else
-'        If CheckStringInSheet(wb_SHUKEI.Worksheets(sname), ThisWorkbook.sheetS("手順").Range("D" & UNITROW)) Then
+'        If CheckStringInSheet(wb_SHUKEI.Worksheets(sname), ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)) Then
 '            wb_SHUKEI.Worksheets(sname).Activate
 '            MsgBox "今から出力しようとしているユニットが既にシート上に存在しますけど、、、　確認して下さい。　 ", Buttons:=vbCritical
 '        Else
@@ -129,7 +129,9 @@ Sub Middle_Check(BL As Integer)
         End
     End Select
 
-    MsgBox "マクロ「Middle_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_SHUKEI & vbCrLf & "の中間チェックです。" & vbCrLf & "ユーザー運転の開始終了時刻などの確認します", vbInformation, "BL" & BL
+    MsgBox "マクロ「Middle_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_SHUKEI & vbCrLf & "の中間チェックです。" _
+        & vbCrLf & "ユーザー運転の開始終了時刻などの確認します", vbInformation, "BL" & BL
+
 
     ' wb_SHUKEIを開く
     Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
@@ -141,7 +143,7 @@ Sub Middle_Check(BL As Integer)
     End If
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     
-    If ThisWorkbook.sheetS("手順").Range("D" & UNITROW).Value <> wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2").Value Then
+    If ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value <> wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2").Value Then
         If MsgBox("シート「利用時間（期間）」に入力されてるユニットと 違 い ま す けど、進めますか？", vbYesNo + vbQuestion, "BL" & BL) = vbNo Then
             Exit Sub
         End If
@@ -161,8 +163,8 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間（期間）").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間（期間）").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間（期間）")
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
-        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 3, ws)
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW), 3, ws)
     Else
         LineSta = 4
     End If
@@ -217,10 +219,10 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(シフト)").Select    '最前面に表示_______________________________________________________________________________
     wb_SHUKEI.Worksheets("利用時間(シフト)").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間(シフト)")
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
-        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW), 2, ws)
         If LineSta = -1 Then
-            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
+            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
             LineSta = 9
         End If
     Else
@@ -282,10 +284,10 @@ Sub Middle_Check(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
     Set ws = wb_SHUKEI.Worksheets("利用時間(User)")
 '    CheckForErrors (ws)
-    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
-        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range("D" & UNITROW), 2, ws)
+    If MsgBox("今のユニットだけ確認しますか？" & vbCrLf & "Yes:　[" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "]だけ確認" & vbCrLf & "No:　全ユニット確認", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
+        LineSta = getLineNum(ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW), 2, ws)
         If LineSta = -1 Then
-            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range("D" & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
+            MsgBox "ユニット「" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "」が見つかりませんでした。ユーザー運転がなかったのかな？？" & vbCrLf & "しょうがないので、全ユニット確認します。", Buttons:=vbExclamation
             LineSta = 9
         End If
     Else
@@ -373,7 +375,7 @@ Function Check_exixt(sname As String, wb As Workbook) As Boolean
     If Not SheetExists(wb, sname) Then
         MsgBox "シートが存在しません。" & vbCrLf & sname & " 終了します。", Buttons:=vbCritical
     Else
-        If CheckStringInSheet(wb.Worksheets(sname), ThisWorkbook.sheetS("手順").Range("D" & UNITROW)) Then
+        If CheckStringInSheet(wb.Worksheets(sname), ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)) Then
             wb.Worksheets(sname).Activate
             MsgBox "今から出力しようとしているユニットが既にシート上に存在しますけど、、、　確認して下さい。　 ", Buttons:=vbCritical
         Else
@@ -399,7 +401,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     Dim result As Boolean
     Dim StartL As Integer
     Dim i As Integer
-    Dim col As Variant
+    Dim COL As Variant
     Check = 0
     
     sheet.Activate
@@ -416,21 +418,21 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     sheet.Cells(StartL, arr(0)).Select
     MsgBox "シート「" & sheet.Name & "」のここから、この行に入っている数式が以降 " & Check_row_cnt & " 行に渡って入っているかチェックを始めます。", vbInformation
 
-    For Each col In arr
+    For Each COL In arr
         For i = StartL + 1 To StartL + Check_row_cnt
-            sheet.Cells(i, col).Select
+            sheet.Cells(i, COL).Select
             'Sleep 20 ' msec
-            result = CheckSameFormulaType(Cells(StartL, col), Cells(i, col))
+            result = CheckSameFormulaType(Cells(StartL, COL), Cells(i, COL))
             If result = True Then
-                Debug.Print "OK:    セル(" & i & ", " & col & ") 数式有  " & Cells(i, col).Formula
+                Debug.Print "OK:    セル(" & i & ", " & COL & ") 数式有  " & Cells(i, COL).Formula
                 'Cells(i, col).Interior.Color = RGB(0, 255, 0)  色付けると非常に時間が掛かる
             Else
-                Debug.Print "要確認！　セル(" & i & ", " & col & ") 数式が入っていないか、数式が異なる"
-                Cells(i, col).Interior.Color = RGB(255, 0, 0)
+                Debug.Print "要確認！　セル(" & i & ", " & COL & ") 数式が入っていないか、数式が異なる"
+                Cells(i, COL).Interior.Color = RGB(255, 0, 0)
                 Check = Check + 1
             End If
         Next
-    Next col
+    Next COL
     If Check <> 0 Then
         MsgBox "シート「" & sheet.Name & "」にて、" & vbCrLf & "数式が入っていないか、数式が異なるセルが " & Check & " 箇所、見つかりました！！要確認です", vbCritical
     End If
@@ -778,7 +780,7 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         End If
         
         If sname = "停止時間" Then
-            If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range("E" & UNITROW) Then ' 列(調整理由)については、数が多いので、ユニット開始時刻より新しいところだけ確認
+            If Cells(i, Retsu_start).Value > ThisWorkbook.sheetS("手順").Range(BEGIN_COL & UNITROW) Then ' 列(調整理由)については、数が多いので、ユニット開始時刻より新しいところだけ確認
                 If Cells(i, Retsu_chouseiriyu) <> "" Then ' If IsEmpty(Cells(i, Retsu_chouseiriyu)) Then
                     Call CMsg("列(調整理由)に調整理由が書かれていることはあまりありませんが、、" & vbCrLf & "確認した方がいいです", vbExclamation, Cells(i, Retsu_chouseiriyu))
                 End If
