@@ -34,7 +34,7 @@ Sub Initial_Check(BL As Integer)
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
@@ -125,7 +125,7 @@ Sub Middle_Check(BL As Integer)
         Debug.Print ">>>BL3"
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
@@ -392,7 +392,7 @@ End Function
 'VBAでは、明示的に ByVal も ByRef も指定しない場合、デフォルトで ByRef（参照渡し）になります。
 'つまり､引数として渡した変数の値が変更される可能性がある ので注意が必要です｡
 'Function Check(arr As Variant, ByVal Retsu_for_Find_last_row As Integer, ByVal Check_row_cnt As Integer, ByVal sheet As Worksheet) As Integer
-' StartL , EndLを引数にした方がいい気がする
+' セルに数式が入ってるかの確認
 Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt As Integer, sheet As Worksheet) As Integer
 ' arr:  チェックする列を配列にセット
 ' Retsu_for_Find_last_row:  値の入っている最終行を取得するためのもの。数式が入っていない列を指定する。数式が入っている列を指定すると数式が入っていない最終行になってしまう
@@ -498,7 +498,7 @@ Sub 計画時間xlsx_Check(BL As Integer)
     Case 3
         Debug.Print ">>>BL3"
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
@@ -625,7 +625,7 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
     Case 3
         Debug.Print ">>>BL3"
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
@@ -728,11 +728,11 @@ Sub 運転集計記録_Check(BL As String, sname As String)
         Debug.Print "SACLA"
         wb_name = BNAME_UNTENSHUKEIKIROKU_SACLA
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
-    MsgBox "マクロ「運転集計記録_Check」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & wb_name & vbCrLf & "のチェックです。" & vbCrLf & "確認します", vbInformation, "BL" & BL
+    MsgBox "マクロ「運転集計記録_Check」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & wb_name & " のシート[" & sname & "]" & vbCrLf & "のチェックです。" & vbCrLf & "確認します", vbInformation, "BL" & BL
 
     Dim wb As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb = OpenBook(wb_name, True)    ' フルパスを指定

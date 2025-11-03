@@ -22,6 +22,6 @@ Private Sub Workbook_Open()
     End If
     
     'MsgBox "TEST@Workbook_Open"
-    Call StartMonitoring 'ネットワークの接続状況をモニタリング
+    '   Call StartMonitoring 'ネットワークの接続状況をモニタリング  リアルタイムでなく、あまり意味なかったのでコメントアウト
     
 End Sub

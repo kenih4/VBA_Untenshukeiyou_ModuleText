@@ -28,7 +28,7 @@ Function OpenBook(ByVal WorkBookName As String, ByVal RO As Boolean) As Workbook
     Dim OWB As Workbook
     Dim wb As Workbook
     Dim retryCount As Integer
-    retryCount = 3  ' 再試行の回数
+    retryCount = 1  ' 再試行の回数
 
     ' 開いているブックの中に指定されたパスのブックがあるかを確認
     For Each wb In Workbooks
@@ -572,6 +572,8 @@ Sub CheckAllDuplicatesByRange(targetRange As Range)
     Set dict = CreateObject("Scripting.Dictionary")
     Set duplicates = New Collection
     targetRange.Select
+    'ActiveWindow.Zoom = True ' 選択したセルの範囲が画面に最適化
+    Call ZoomToSelectionWithMaxLimit
     
     For Each cell In targetRange
         If Not IsEmpty(cell.Value) Then
@@ -597,6 +599,7 @@ Sub CheckAllDuplicatesByRange(targetRange As Range)
     Else
         MsgBox "重複はありませんでした", vbInformation, "確認完了"
     End If
+    ActiveWindow.Zoom = 100
 End Sub
 
 
@@ -697,4 +700,21 @@ ErrorHandler:
     MsgBox "Git Bashの実行に失敗しました。パスを確認してください。", vbCritical
 End Sub
 
+
+'=== ズーム値が100を超えないように制御 ======================================
+Sub ZoomToSelectionWithMaxLimit()
+    Dim rng As Range
+    Dim tempZoom As Variant
+
+    ' 一時的に選択範囲をズーム
+    ActiveWindow.Zoom = True
+
+    ' ズーム値を取得
+    tempZoom = ActiveWindow.Zoom
+
+    ' 最大ズーム値を100に制限
+    If tempZoom > 100 Then
+        ActiveWindow.Zoom = 100
+    End If
+End Sub
 

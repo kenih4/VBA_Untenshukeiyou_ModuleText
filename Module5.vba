@@ -47,7 +47,7 @@ Sub Final_Check(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
         DOWNTIME_ROW = 9
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 
@@ -117,11 +117,18 @@ Sub Final_Check(BL As Integer)
     MsgBox "Fault集計シートをチェックします。" & vbCrLf & "", vbInformation, "BL" & BL
     If BL = 2 Then
         LineSta = getLineNum("SACLA Fault間隔(BL2)", 2, wb_MATOME.Worksheets("Fault集計"))
-        LineSto = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計"))
+        LineSto = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計")) - 1
     Else
         LineSta = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計"))
-        LineSto = wb_MATOME.Worksheets("Fault集計").Cells(Rows.Count, "B").End(xlUp).ROW
+        LineSto = wb_MATOME.Worksheets("Fault集計").Cells(Rows.Count, "C").End(xlUp).ROW ' B列の最終行だと結合されているので、C列にした
     End If
+
+    MsgBox LineSta & " - " & LineSto
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("B" & LineSta & ":B" & LineSto))
+    MsgBox LineSta & " - " & LineSto
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("C" & LineSta & ":C" & LineSto))
+Exit Sub
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("D" & LineSta & ":D" & LineSto))
 
     For i = LineSta To LineSto
         Debug.Print "i = " & i & "  " & Cells(i, 2).Value
@@ -175,13 +182,19 @@ Sub Final_Check(BL As Integer)
         End If
     Next
 
-
     
 
     wb_MATOME.Worksheets("まとめ ").Activate    'これ大事======================================================================================
 
     MsgBox "まとめシートの(a)のチェックします。" & vbCrLf & "", vbInformation, "BL" & BL
-    For i = getLineNum("(a)運転時間　期間毎", 2, wb_MATOME.Worksheets("まとめ ")) To getLineNum("(b)運転時間　シフト毎", 2, wb_MATOME.Worksheets("まとめ "))
+    
+    LineSta = getLineNum("(a)運転時間　期間毎", 2, wb_MATOME.Worksheets("まとめ "))
+    LineSto = getLineNum("(b)運転時間　シフト毎", 2, wb_MATOME.Worksheets("まとめ ")) - 1
+    
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("B" & LineSta & ":B" & LineSto))
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("C" & LineSta & ":C" & LineSto))
+
+    For i = LineSta To LineSto
         Debug.Print "i = " & i & "  " & Cells(i, 2).Value
 
         If wb_MATOME.Worksheets("まとめ ").Cells(i, 2).Value = UNIT Then
@@ -243,14 +256,17 @@ Sub Final_Check(BL As Integer)
     MsgBox "まとめシートの(b)のチェック。" & vbCrLf & "", vbInformation, "BL" & BL
     If BL = 2 Then
         LineSta = getLineNum("(b-1)BL2", 2, wb_MATOME.Worksheets("まとめ "))
-        LineSto = getLineNum("(b-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
+        LineSto = getLineNum("(b-2)BL3", 2, wb_MATOME.Worksheets("まとめ ")) - 1
     Else
         LineSta = getLineNum("(b-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
-        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).ROW
+        LineSto = getLineNum("(c)運転条件", 2, wb_MATOME.Worksheets("まとめ ")) - 1
     End If
 
-    Check_col_arr = Array(3, 4, 5, 6, 7, 8)    ' チェックする列の値を配列にセット  シフト時間(開始・終了・間隔)、利用率、ビーム調整時間、ダウンタイム
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("B" & LineSta & ":B" & LineSto))
+    'CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("C" & LineSta & ":C" & LineSto)) '本当は開始日時の重複もチェックしたいが「total」と書かれたセルがあるのでここは諦めた
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("D" & LineSta & ":D" & LineSto))
 
+    Check_col_arr = Array(3, 4, 5, 6, 7, 8)    ' チェックする列の値を配列にセット  シフト時間(開始・終了・間隔)、利用率、ビーム調整時間、ダウンタイム
     For i = LineSta To LineSto
         Debug.Print "i = " & i & "  " & Cells(i, 2).Value
 
@@ -313,18 +329,17 @@ Sub Final_Check(BL As Integer)
     Next
 
 
-Exit Sub
-
 
     MsgBox "まとめシートの(c)のチェック。" & vbCrLf & "", vbInformation, "BL" & BL
     If BL = 2 Then
         LineSta = getLineNum("(c-1)BL2", 2, wb_MATOME.Worksheets("まとめ "))
-        LineSto = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
+        LineSto = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ ")) - 1
     Else
         LineSta = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
         LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).ROW
     End If
 
+    CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("B" & LineSta & ":B" & LineSto))
 
     For i = LineSta To LineSto
         Debug.Print "DEBUG D    i = " & i & "  " & Cells(i, 2).Value
@@ -449,7 +464,7 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
         BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
         DOWNTIME_ROW = 9
     Case Else
-        Debug.Print "Zzz..."
+        MsgBox "BLが不正です。終了します。", vbCritical
         End
     End Select
 

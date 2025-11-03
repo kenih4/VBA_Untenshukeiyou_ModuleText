@@ -62,7 +62,7 @@ Sub ボタン18_Click() ' TEST!!!!!!!!!!!!
 '            BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
 '            SNAME_KEIKAKU_BL = "bl3"
 '        Case Else
-'            Debug.Print "Zzz..."
+'            MsgBox "BLが不正です。終了します。", vbCritical
 '            Exit Sub
 '    End Select
 '

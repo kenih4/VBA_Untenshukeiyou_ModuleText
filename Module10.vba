@@ -27,7 +27,7 @@ Sub Fault集計m(BL As Integer)
             BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL3.xlsm"
             SNAME_FAULT = "Fault集計(BL3)"
         Case Else
-            Debug.Print "Zzz..."
+            MsgBox "BLが不正です。終了します。", vbCritical
             End
     End Select
     
@@ -109,7 +109,7 @@ Sub Fault集計m(BL As Integer)
                 beginL = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計"))
                 EndL = wb_MATOME.Worksheets("Fault集計").Cells(xlLastRow, 2).End(xlUp).ROW   'B列の最終行を取得
             Case Else
-                Debug.Print "Zzz..."
+                MsgBox "BLが不正です。終了します。", vbCritical
                 End
         End Select
         
