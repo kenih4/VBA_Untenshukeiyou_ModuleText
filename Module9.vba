@@ -16,7 +16,9 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
     Dim BNAME_SHUKEI As String
     Dim result As Boolean
     
-       
+    If Not CheckServerAccess_FSO(BNAME_MATOME) Then
+        Exit Sub
+    End If
     
     ' wb_MATOMEを開く
     Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる

@@ -16,7 +16,9 @@ Sub ユニットBL2とBL3をマージ()
     Dim wb As Workbook
     Dim BNAME_SHUKEI As String
     
-    
+    If Not CheckServerAccess_FSO(BNAME_MATOME) Then
+        Exit Sub
+    End If
     ' wb_MATOMEを開く
     Dim wb_MATOME As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb_MATOME = OpenBook(BNAME_MATOME, False) ' フルパスを指定

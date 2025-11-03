@@ -15,10 +15,8 @@ Private Sub Workbook_Open()
     
     Call CheckCircularReference '循環参照の確認
     
-    Dim filePath As String
-    filePath = BNAME_KEIKAKU
-    If Not CheckServerAccess_FSO(BNAME_KEIKAKU) Then 'ネットワークの接続状況を確認
-        MsgBox "'" & filePath & "' にアクセスできません。ネットワーク接続に問題があるか、ファイルが存在しないか、アクセス権がありません。", vbCritical
+    If Not CheckServerAccess_FSO(BNAME_KEIKAKU) Then
+        'Exit Sub
     End If
     
     'MsgBox "TEST@Workbook_Open"

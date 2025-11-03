@@ -28,7 +28,10 @@ Function CheckServerAccess_FSO(ByVal fullNetworkFilePath As String) As Boolean
     If fso.FileExists(fullNetworkFilePath) Then
         CheckServerAccess_FSO = True ' アクセス成功
         ThisWorkbook.sheetS("手順").Range("B2").Value = "Connect"
+        'MsgBox "OK@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスOK", vbInformation
         Debug.Print "アクセス成功==="
+    Else
+        MsgBox "Err@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスできません。ネットワーク接続の問題か、ファイルが存在しないか、アクセス権がありません。", vbCritical
     End If
     
     Set fso = Nothing

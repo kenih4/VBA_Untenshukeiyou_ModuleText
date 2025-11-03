@@ -12,7 +12,7 @@ Public Const BNAME_UNTENSHUKEIKIROKU_SACLA As String = CPATH & WHICH & "\SACLA運
 Public Const BNAME_KEIKAKU As String = CPATH & "計画時間.xlsx"
 Public Const BNAME_SOURCE As String = "C:\me\unten\マクロいろいろ.xlsm"
 Public Const OperationSummaryDir As String = "C:\me\unten\OperationSummary"
-Public Const BNAME_MATOME As String = CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm"
+Public Const BNAME_MATOME As String = CPATH & WHICH & "\SACLA運転状況集計まとめtest.xlsm"
 
 Public Const edgePath As String = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 

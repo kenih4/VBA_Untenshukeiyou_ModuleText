@@ -40,7 +40,10 @@ Sub Initial_Check(BL As Integer)
 
     '    BNAME_SHUKEI = "\\saclaopr18.spring8.or.jp\common\運転状況集計\最新\SACLA\SACLA運転状況集計BL2TEST.xlsm"
     MsgBox "マクロ「Initial_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_SHUKEI & vbCrLf & "のチェックです。" & vbCrLf & "数式が入っているべきセルに数式が入っているか確認します", vbInformation, "BL" & BL
-
+    If Not CheckServerAccess_FSO(BNAME_SHUKEI) Then
+        Exit Sub
+    End If
+    
     ' wb_SHUKEIを開く
     Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb_SHUKEI = OpenBook(BNAME_SHUKEI, True)    ' フルパスを指定
@@ -131,8 +134,13 @@ Sub Middle_Check(BL As Integer)
 
     MsgBox "マクロ「Middle_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_SHUKEI & vbCrLf & "の中間チェックです。" _
         & vbCrLf & "ユーザー運転の開始終了時刻などの確認します", vbInformation, "BL" & BL
-
-
+    If Not CheckServerAccess_FSO(BNAME_SHUKEI) Then
+        Exit Sub
+    End If
+    If Not CheckServerAccess_FSO(BNAME_MATOME) Then
+        Exit Sub
+    End If
+    
     ' wb_SHUKEIを開く
     Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb_SHUKEI = OpenBook(BNAME_SHUKEI, True)    ' フルパスを指定
@@ -490,6 +498,10 @@ Sub 計画時間xlsx_Check(BL As Integer)
 '    pattern = "^\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$"    '   時間が一桁の場合もあるのでそれに対応
     pattern = "^\d{4}/\d{1,2}/\d{1,2}[ ]{1,2}\d{1,2}:\d{1,2}:\d{1,2}$"  ' スペースの数も1つ、または2つでもマッチするようにしたいです。
 
+    If Not CheckServerAccess_FSO(BNAME_KEIKAKU) Then
+        Exit Sub
+    End If
+    
     Select Case BL
     Case 1
         Debug.Print "SCSS+"
@@ -733,6 +745,9 @@ Sub 運転集計記録_Check(BL As String, sname As String)
     End Select
 
     MsgBox "マクロ「運転集計記録_Check」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & wb_name & " のシート[" & sname & "]" & vbCrLf & "のチェックです。" & vbCrLf & "確認します", vbInformation, "BL" & BL
+    If Not CheckServerAccess_FSO(wb_name) Then
+        Exit Sub
+    End If
 
     Dim wb As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb = OpenBook(wb_name, True)    ' フルパスを指定

@@ -23,6 +23,10 @@ Sub Final_Check(BL As Integer)
 
     MsgBox "マクロ「Final_Check()」を実行します。" & vbCrLf & "このマクロは、" & vbCrLf & BNAME_MATOME & vbCrLf & "のチェックです。" & vbCrLf & "チェックするユニットを確認する為に一旦、SACLA運転状況集計BL*.xlsmを開きます", vbInformation, "BL" & BL
 
+    If Not CheckServerAccess_FSO(BNAME_MATOME) Then
+        Exit Sub
+    End If
+    
     '    Dim s
     '    s = Application.InputBox("BLを入力して下さい。", "確認", Type:=1)    '  Type:=1 数値のみ
     '    If s = False Then
@@ -123,11 +127,8 @@ Sub Final_Check(BL As Integer)
         LineSto = wb_MATOME.Worksheets("Fault集計").Cells(Rows.Count, "C").End(xlUp).ROW ' B列の最終行だと結合されているので、C列にした
     End If
 
-    MsgBox LineSta & " - " & LineSto
     CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("B" & LineSta & ":B" & LineSto))
-    MsgBox LineSta & " - " & LineSto
     CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("C" & LineSta & ":C" & LineSto))
-Exit Sub
     CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("D" & LineSta & ":D" & LineSto))
 
     For i = LineSta To LineSto
