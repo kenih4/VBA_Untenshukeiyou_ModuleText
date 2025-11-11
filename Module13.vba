@@ -124,16 +124,16 @@ Sub PDF_output_Click()
 '        MsgBox "要素 " & i & ": " & myArray(i)
         Set sheet = wb_MATOME.Worksheets(myArray(i))
 '       sheet.PrintPreview
-        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
+        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & Replace(myArray(i), " ", "") & ").pdf"
         Debug.Print "pdfPath:   " & pdfPath
         ' シートをPDFとしてエクスポート
         sheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=pdfPath, Quality:=xlQualityStandard, _
                               IncludeDocProperties:=True, IgnorePrintAreas:=False, _
                               OpenAfterPublish:=False
                               '  IgnorePrintAreas: Falseの場合、設定された印刷エリアのみがPDFにエクスポートされます。
-    
+
         ' PDFを開く
-        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & myArray(i) & ").pdf"
+        pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & Replace(myArray(i), " ", "") & ").pdf"
         shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
 '         shell """" & edgePath & """ --start-maximized """ & pdfPath & """", vbNormalFocus      [--start-maximized]オプションつけても最大化されず
         MsgBox "運転状況集計(" & myArray(i) & ").pdf" & vbCrLf & "を出力しました。", vbInformation

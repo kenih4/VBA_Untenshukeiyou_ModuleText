@@ -580,6 +580,9 @@ Sub 計画時間xlsx_Check(BL As Integer)
             If InStr(Cells(i, 4).Value, "プログラム") > 0 Or InStr(Cells(i, 4).Value, "大学院") > 0 Or InStr(Cells(i, 4).Value, "基盤") > 0 Or InStr(Cells(i, 4).Value, "BL") > 0 Then
                Call CMsg("変だぞ！！！" & vbCrLf & "ユーザーなのに。" & vbCrLf & "基盤開発プログラムや、大学院生プログラムは利用調整になります！！", vbCritical, Cells(i, 4))
             End If
+            If StrComp(Right(Cells(i, 4).Value, 1), "G", vbBinaryCompare) = 0 = False Then  ' 末尾の1文字が "G" かどうかチェック（大文字・小文字を区別）
+                Call CMsg("ユーザー名(末尾の1文字が 「G」 )が入るべきですが。確認した方がいいです。", vbExclamation, Cells(i, 4))
+            End If
         ElseIf InStr(Cells(i, 1).Value, "利用調整") > 0 Then ' 利用調整(BL studyなど)の確認
             If InStr(Cells(i, 4).Value, "FCBT") > 0 Then
                Call CMsg("変だぞ！！！" & vbCrLf & "利用調整(BL studyなど)なのに、" & vbCrLf & "FCBTが！！" & vbCrLf & "ユーザーになる筈です", vbCritical, Cells(i, 4))

@@ -188,10 +188,10 @@ Sub 作成前のバックアップ取得()
             MsgBox "コピー失敗…", vbCritical
         End If
         
-        result = SetFileReadOnly(createdPath & "\SACLA運転集計記録.xlsm")
-        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL2.xlsm")
-        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL3.xlsm")
-        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計まとめ.xlsm")
+'        result = SetFileReadOnly(createdPath & "\SACLA運転集計記録.xlsm")
+'        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL2.xlsm")
+'        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計BL3.xlsm")
+'        result = SetFileReadOnly(createdPath & "\SACLA運転状況集計まとめ.xlsm")
     Else
         MsgBox "フォルダ作成に失敗しました。", vbCritical
     End If
