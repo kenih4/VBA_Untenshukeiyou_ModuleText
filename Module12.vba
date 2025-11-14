@@ -29,12 +29,12 @@ Function RunPythonScript(scriptPath As String, workDir As String) As Boolean
 '        MsgBox "異常です。終了します。" & vbCrLf & "buttonName = " & buttonName, Buttons:=vbCritical
 '        End
 '    End If
-    
+    Debug.Print "Debug   scriptPath=" & scriptPath
     MsgBox "python " & scriptPath & "を" & vbCrLf & "実行します。", Buttons:=vbInformation
     
     ' コマンドを組み立て：まず指定フォルダに移動し、その後Pythonを実行
     Command = "cmd.exe /c cd /d " & Chr(34) & workDir & Chr(34) & " && " & pythonExe & " " & workDir & "\" & scriptPath
-    
+    Debug.Print "Debug  Command=" & Command
     'Shell command, vbNormalFocus ' Shell関数でPythonスクリプトを実行 終了を待たない
     
     Dim shell As Object

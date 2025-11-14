@@ -41,7 +41,7 @@ Sub 計画時間xlsxを出力_Click()
     Dim fileNum As Integer
 
     If MsgBox("出力するユニットは" & vbCrLf & "   「 " & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & " 」" & vbCrLf & ThisWorkbook.sheetS("手順").Range(BEGIN_COL & UNITROW) & "    ～　　" & vbCrLf & ThisWorkbook.sheetS("手順").Range(END_COL & UNITROW) & vbCrLf & "開始しますか？", vbYesNo) = vbNo Then Exit Sub
-    
+
     fileNum = FreeFile
     Open OperationSummaryDir & "\dt_beg.txt" For Output As #fileNum
     Print #fileNum, Format(ThisWorkbook.sheetS("手順").Cells(UNITROW, 5).Value, "yyyy/mm/dd hh:nn");
@@ -51,7 +51,13 @@ Sub 計画時間xlsxを出力_Click()
     Open OperationSummaryDir & "\dt_end.txt" For Output As #fileNum
     Print #fileNum, Format(ThisWorkbook.sheetS("手順").Cells(UNITROW, 7).Value, "yyyy/mm/dd hh:nn");
     Close #fileNum
+    
     If RunPythonScript("getGunHvOffTime_LOCALTEST.py", OperationSummaryDir) = False Then
+        MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
+    End If
+    
+    MsgBox "続いて、スケジュールを画像で表示しますが、これには施設調整は出てこないので注意！", Buttons:=vbExclamation
+    If RunPythonScript("ical.py -u " & IcalDir & "\ical_setting.xlsx " & IcalDir & "\ical.xlsx", IcalDir) = False Then
         MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
     End If
     
