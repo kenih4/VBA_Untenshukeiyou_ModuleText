@@ -7,3 +7,5 @@ test.txt
 unten - ショートカ�?�?.lnk
 *.xlsx
 *.xlsm
+.venv/
+.vscode/

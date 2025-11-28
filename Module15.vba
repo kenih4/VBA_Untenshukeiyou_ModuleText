@@ -56,8 +56,7 @@ Sub 計画時間xlsxを出力_Click()
         MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
     End If
     
-    MsgBox "続いて、スケジュールを画像で表示しますが、これには施設調整は出てこないので注意！", Buttons:=vbExclamation
-    If RunPythonScript("ical.py -u " & IcalDir & "\ical_setting.xlsx " & IcalDir & "\ical.xlsx", IcalDir) = False Then
+    If RunPythonScript("ical.py -u " & IcalDir & "\ical_setting.xlsx " & IcalDir & "\ical_SHISETUCHOUSEI.xlsx", IcalDir) = False Then
         MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
     End If
     
@@ -190,6 +189,10 @@ Sub 作成前のバックアップ取得()
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL2.xlsm", createdPath & "\SACLA運転状況集計BL2.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL3.xlsm", createdPath & "\SACLA運転状況集計BL3.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計まとめ.xlsm", createdPath & "\SACLA運転状況集計まとめ.xlsm")
+        
+        result = CopyFileSafely(CPATH & "SCSS" & "\SCSS運転集計記録.xlsm", createdPath & "\SCSS運転集計記録.xlsm")
+        result = CopyFileSafely(CPATH & "SCSS" & "\SCSS運転集計記録.xlsm", createdPath & "\SCSS運転集計記録BL1.xlsm")
+        
         If Not result Then
             MsgBox "コピー失敗…", vbCritical
         End If
@@ -202,6 +205,7 @@ Sub 作成前のバックアップ取得()
         MsgBox "フォルダ作成に失敗しました。", vbCritical
     End If
     MsgBox "作成前のバックアップ取得、完了", vbInformation
+    shell "explorer.exe " & createdPath, vbNormalFocus
 End Sub
 
 
