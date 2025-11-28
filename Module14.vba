@@ -116,6 +116,7 @@ Sub Middle_Check(BL As Integer)
     Dim LineSta As Integer
     Dim LineSto As Integer
     Dim ws As Worksheet
+    Dim pattern As String
 
     Select Case BL
     Case 1
@@ -308,6 +309,12 @@ Sub Middle_Check(BL As Integer)
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Rows(i).Select
         Rows(i).Interior.Color = RGB(0, 255, 0)
+        
+        pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
+        If Not IsValidFormat(Cells(i, "B"), pattern) Then
+            Call CMsg("セル [" & Cells(i, "B").Value & "] の値が ユニットの形式（例: 2-11）ではありません。", vbCritical, Cells(i, "B"))
+        End If
+        
         If Not IsDateTimeFormatRegEx(Cells(i, "C")) Or Not IsDateTimeFormatRegEx(Cells(i, "D")) Or Not IsDateTimeFormatRegEx(Cells(i, "E")) Or Not IsDateTimeFormatRegEx(Cells(i, "F")) Then
             Call CMsg("日時の形式ではありません。もしかしたら日付オンリーのUNIXTIMEかも。" & vbCrLf & "セルの書式設定を文字列にすると確認できます。", vbCritical, Cells(i, "C"))
         Else
@@ -540,9 +547,10 @@ Sub 計画時間xlsx_Check(BL As Integer)
     LineSta = 2 ' getLineNum("運転種別", 1, wb_KEIKAKU.Worksheets("bl" & BL)) + 1
     LineSto = wb_KEIKAKU.Worksheets("bl" & BL).Cells(Rows.Count, "A").End(xlUp).ROW
     
-    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("B" & LineSta & ":B" & LineSto - 1))
-    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("C" & LineSta & ":C" & LineSto - 1))
-    
+    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("B" & LineSta & ":B" & LineSto - 1)) ' start 列
+    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("C" & LineSta & ":C" & LineSto - 1)) ' end 列
+    CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("D" & LineSta & ":D" & LineSto - 1)) ' 備考 列
+
     For i = LineSta To LineSto
 '       Debug.Print "この行　i = " & i & " が、" & Cells(i, 2).Value & "    " & Cells(i, 3).Value & "   " & Cells(i, 4).Value
         Rows(i).Interior.Color = RGB(0, 205, 0)
@@ -674,12 +682,14 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
         Col_GUN_HV_ON = "B"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("A" & LineSta & ":A" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("B" & LineSta & ":B" & LineSto))
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("C" & LineSta & ":C" & LineSto))
     Else
         LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "G").End(xlUp).ROW
         Col_GUN_HV_OFF = "G"
         Col_GUN_HV_ON = "H"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("G" & LineSta & ":G" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("H" & LineSta & ":H" & LineSto))
+        CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("I" & LineSta & ":I" & LineSto))
     End If
     
     

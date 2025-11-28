@@ -13,6 +13,7 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     Dim result As Boolean
     Dim PasteSheet As Worksheet
     Dim PasteRow As Integer
+    Dim pattern As String
     Debug.Print "============================================================================================================"
 
 
@@ -103,6 +104,13 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     Dim latest_unit As Integer
     Dim newunit As String
     PasteSheet.Cells(PasteRow - 1, 1).Select
+    
+    pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
+    If Not IsValidFormat(PasteSheet.Cells(PasteRow - 1, 1), pattern) Then
+        Call CMsg("セル [" & PasteSheet.Cells(PasteRow - 1, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteRow - 1, 1))
+        Exit Sub
+    End If
+    
     before_unit = PasteSheet.Cells(PasteRow - 1, 1)
     Debug.Print "before_unit: " & before_unit
     arr = Split(before_unit, "-")
@@ -123,6 +131,12 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1).Activate    ' セルB3[運転種別]の最終行へ
     If MsgBox("ここに新しいユニット " & newunit & "を入れていいですか？？", vbYesNo + vbQuestion, "newunit") = vbYes Then
         PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1) = newunit
+    End If
+
+    pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
+    If Not IsValidFormat(PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1), pattern) Then
+        Call CMsg("セル [" & PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1))
+        Exit Sub
     End If
 
     MsgBox "終了しました。" & vbCrLf & "保存してから、" & vbCrLf & "次、fault.txt出力(getBlFaultSummary.py)に進みましょう！", vbInformation, "BL" & BL
