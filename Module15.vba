@@ -51,9 +51,13 @@ Sub 計画時間xlsxを出力_Click()
     Open OperationSummaryDir & "\dt_end.txt" For Output As #fileNum
     Print #fileNum, Format(ThisWorkbook.sheetS("手順").Cells(UNITROW, 7).Value, "yyyy/mm/dd hh:nn");
     Close #fileNum
-    
-    If RunPythonScript("getGunHvOffTime_LOCALTEST.py", OperationSummaryDir) = False Then
-        MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
+       
+    If ThisWorkbook.sheetS("手順").Cells(UNITROW, 7).Value > Now Then
+        MsgBox "ユニットの終了日時が未来です。" & vbCrLf & "pythonスクリプトgetGunHvOffTime_LOCALTEST.pyを実行してもエラーになるだけなので、これは実行しません。" & vbCrLf & "icalから取得するスクリプトだけ実行します。"
+    Else
+        If RunPythonScript("getGunHvOffTime_LOCALTEST.py", OperationSummaryDir) = False Then
+            MsgBox "pythonでエラー発生の模様", Buttons:=vbCritical
+        End If
     End If
     
     If RunPythonScript("ical.py -u " & IcalDir & "\ical_setting.xlsx " & IcalDir & "\ical_SHISETUCHOUSEI.xlsx", IcalDir) = False Then
