@@ -222,7 +222,7 @@ End Function
 
 '指定さてた文字列が存在する行を取得  シート内全て==============================================================================================================================
 Function getLineNum(ByVal str As String, ByVal TARGET_COL As Integer, ByVal sheet As Worksheet) As Integer
-    getLineNum = getLineNum_RS(str, TARGET_COL, 1, sheet.Cells(Rows.Count, TARGET_COL).End(xlUp).ROW, sheet)
+    getLineNum = getLineNum_RS(str, TARGET_COL, 1, sheet.Cells(Rows.Count, TARGET_COL).End(xlUp).Row, sheet)
 End Function
 
 
@@ -511,7 +511,7 @@ Function GetLastDataRow(ws As Worksheet, colName As String) As Long
     Dim lastRow As Long
     Dim colNum As Long
     colNum = ws.Range(colName & "1").Column
-    lastRow = ws.Cells(ws.Rows.Count, colNum).End(xlUp).ROW
+    lastRow = ws.Cells(ws.Rows.Count, colNum).End(xlUp).Row
 
     For i = lastRow To 1 Step -1
 '        If ws.Cells(i, colNum).HasFormula Then

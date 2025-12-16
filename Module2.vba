@@ -88,11 +88,11 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
 
     'コピーして貼り付け
     Set PasteSheet = wb_SHUKEI.Worksheets("GUN HV OFF時間記録")
-    PasteRow = PasteSheet.Range("C5").End(xlDown).ROW + 1
+    PasteRow = PasteSheet.Range("C5").End(xlDown).Row + 1
     result = CpPaste(wb_KEIKAKU.Worksheets("GUN HV OFF"), RANGE_GUN_HV_OFF, Col_GUN_HV_OFF, PasteSheet, PasteSheet.Cells(PasteRow, 3), Array(2, 6, 7), 3)    '「シート GUN HV OFF」をコピーして貼り付け
 
     Set PasteSheet = wb_SHUKEI.Worksheets("運転予定時間")
-    PasteRow = PasteSheet.Range("B3").End(xlDown).ROW + 1
+    PasteRow = PasteSheet.Range("B3").End(xlDown).Row + 1
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "A2:C", 1, PasteSheet, PasteSheet.Cells(PasteRow, 2), Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2)    '「シート bl*」をコピーして貼り付け
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "D2:D", 1, PasteSheet, PasteSheet.Cells(PasteRow, 7), -1, -1)    '「シート bl*の備考列」をコピーして貼り付け　' 前の行で、Check Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2  してるから本来いらないので-1
 
@@ -128,14 +128,14 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
         MsgBox "OK!" & vbCrLf & "新しいユニット名合致!!!", Buttons:=vbInformation
     End If
     PasteSheet.Activate
-    PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1).Activate    ' セルB3[運転種別]の最終行へ
+    PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1).Activate    ' セルB3[運転種別]の最終行へ
     If MsgBox("ここに新しいユニット " & newunit & "を入れていいですか？？", vbYesNo + vbQuestion, "newunit") = vbYes Then
-        PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1) = newunit
+        PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1) = newunit
     End If
 
     pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
-    If Not IsValidFormat(PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1), pattern) Then
-        Call CMsg("セル [" & PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).ROW, 1))
+    If Not IsValidFormat(PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1), pattern) Then
+        Call CMsg("セル [" & PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1))
         Exit Sub
     End If
 
@@ -171,7 +171,7 @@ Function CpPaste(sheetS As Worksheet, rangeS As String, colS As Integer, sheetT 
 '    MsgBox sheetS.Range(Range(HeaderCELL).Columns.Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row    ' エラー
     Dim tr As Variant
     sheetS.Activate
-    Set tr = Range(rangeS & Cells(Rows.Count, colS).End(xlUp).ROW)
+    Set tr = Range(rangeS & Cells(Rows.Count, colS).End(xlUp).Row)
     tr.Copy
     tr.Select
     If MsgBox("選択部分をコピーしました。" & "行数は " & tr.Rows.Count & vbCrLf & "次に進むにはYes", vbYesNo + vbQuestion) = vbNo Then Exit Function

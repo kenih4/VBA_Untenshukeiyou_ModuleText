@@ -428,7 +428,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     '    StartL = sheet.Range("A:A").Find(What:="*", LookAt:=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1 ' この方法だと罫線も含んだ最終行になってしまう
     '    StartL = sheet.Cells(Rows.Count, Retsu_for_Find_last_row).End(xlUp).Row + 1
     '    StartL = sheet.Range(Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1 ' なぜか　シート「利用時間(User)」だけ、「オブジェクト変数またはWithブロック変数が設定されていません」のエラー  問題はここ　Columns(Retsu_for_Find_last_row).Address
-    StartL = sheet.Range(sheet.Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).ROW + 1    ' TEST
+    StartL = sheet.Range(sheet.Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1    ' TEST
 
     sheet.Cells(StartL, arr(0)).Select
     MsgBox "シート「" & sheet.Name & "」のここから、この行に入っている数式が以降 " & Check_row_cnt & " 行に渡って入っているかチェックを始めます。", vbInformation
@@ -545,7 +545,7 @@ Sub 計画時間xlsx_Check(BL As Integer)
 
     wb_KEIKAKU.Worksheets("bl" & BL).Activate    'これ大事
     LineSta = 2 ' getLineNum("運転種別", 1, wb_KEIKAKU.Worksheets("bl" & BL)) + 1
-    LineSto = wb_KEIKAKU.Worksheets("bl" & BL).Cells(Rows.Count, "A").End(xlUp).ROW
+    LineSto = wb_KEIKAKU.Worksheets("bl" & BL).Cells(Rows.Count, "A").End(xlUp).Row
     
     CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("B" & LineSta & ":B" & LineSto - 1)) ' start 列
     CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("bl" & BL).Range("C" & LineSta & ":C" & LineSto - 1)) ' end 列
@@ -677,14 +677,14 @@ Sub 計画時間xlsx_GUN_HV_OFF_Check(BL As Integer)
     wb_KEIKAKU.Worksheets("GUN HV OFF").Activate    'これ大事
     LineSta = 3
     If BL = 2 Then
-        LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "A").End(xlUp).ROW
+        LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "A").End(xlUp).Row
         Col_GUN_HV_OFF = "A"
         Col_GUN_HV_ON = "B"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("A" & LineSta & ":A" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("B" & LineSta & ":B" & LineSto))
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("C" & LineSta & ":C" & LineSto))
     Else
-        LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "G").End(xlUp).ROW
+        LineSto = wb_KEIKAKU.Worksheets("GUN HV OFF").Cells(Rows.Count, "G").End(xlUp).Row
         Col_GUN_HV_OFF = "G"
         Col_GUN_HV_ON = "H"
         CheckAllDuplicatesByRange (wb_KEIKAKU.Worksheets("GUN HV OFF").Range("G" & LineSta & ":G" & LineSto))
@@ -885,7 +885,7 @@ Sub CheckScheduleContinuity(sheet As Worksheet)
     Dim i As Long
     Dim prevEndTime As Date
     
-    lastRow = sheet.Cells(sheet.Rows.Count, "A").End(xlUp).ROW - 1 ' 最終行の一行手前までチェック
+    lastRow = sheet.Cells(sheet.Rows.Count, "A").End(xlUp).Row - 1 ' 最終行の一行手前までチェック
     
     For i = 2 To lastRow
         Debug.Print "DEBUG: " & Cells(i, 2).Value

@@ -90,7 +90,7 @@ Sub cp_paste_faulttxt_UNTENZYOKYOSYUKEI(BL As Integer, ROW_COUNT As Integer)
     wb_SHUKEI.Worksheets("集計記録").Activate
 
 '   targetline = wb_SHUKEI.Worksheets("集計記録").Range("C8").End(xlDown).ROW + 1 ' セルC8「開始時間」から最終行へ（データが連続している場合は、空白セルの手前のデータを取得）
-    targetline = wb_SHUKEI.Worksheets("集計記録").Cells(wb_SHUKEI.Worksheets("集計記録").Rows.Count, "C").End(xlUp).ROW + 1 ' 列Cの最下行から上方向にデータを探すので、空白があっても無視できます。
+    targetline = wb_SHUKEI.Worksheets("集計記録").Cells(wb_SHUKEI.Worksheets("集計記録").Rows.Count, "C").End(xlUp).Row + 1 ' 列Cの最下行から上方向にデータを探すので、空白があっても無視できます。
     If Check(Array(7, 8, 9), 3, ROW_COUNT + 10, wb_SHUKEI.Worksheets("集計記録")) <> 0 Then Call Fin("貼付け先のシートに数式が入っていない箇所が見つかりました。終了します。" & vbCrLf & "数式を直してから再度行って下さい。", 3)
     wb_SHUKEI.Worksheets("集計記録").Cells(targetline, 1).Activate
     MsgBox "ここに　Ctrl+Vして、「fault.txt」を貼り付けて下さい。" & vbCrLf & "注意点：先に片方のBLを引き渡した場合など、この段階で調整時間（ユニット切替えなど）の時間を確認しておく！！", vbInformation, "BL" & BL

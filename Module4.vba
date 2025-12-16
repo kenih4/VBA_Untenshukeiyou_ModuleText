@@ -32,8 +32,8 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
         Debug.Print "水平方向の自動貝の数: " & sheet.HPageBreaks.Count
         For Each HPageBreak In sheet.HPageBreaks
             If HPageBreak.Type = xlPageBreakAutomatic Then
-                Debug.Print "自動貝（水平）位置: 行 " & HPageBreak.Location.ROW
-                AUTO_PB_LINE_CNT = HPageBreak.Location.ROW - 3 ' ちょっと余裕見て-5してる
+                Debug.Print "自動貝（水平）位置: 行 " & HPageBreak.Location.Row
+                AUTO_PB_LINE_CNT = HPageBreak.Location.Row - 3 ' ちょっと余裕見て-5してる
             End If
             Exit For
         Next HPageBreak
@@ -72,7 +72,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     End Select
     
     
-    Debug.Print "Last: " & Cells(Rows.Count, TARGET_COL).End(xlUp).ROW
+    Debug.Print "Last: " & Cells(Rows.Count, TARGET_COL).End(xlUp).Row
     For i = 0 To UBound(RPL, 1) - 1 ' UBound(RPL, 1)の1は行の意味。　2だと列のようだ
         Debug.Print "RPL(" & i & ", 0) : " & RPL(i, 0) & "  この行が必須貝:" & RPL(i, 1)
     Next
@@ -84,7 +84,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     sheet.PageSetup.PrintArea = "" ' 印刷範囲のクリア
     
 
-    For i = 1 To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).ROW
+    For i = 1 To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row
         
         '必須の貝
         For h = 0 To UBound(RPL, 1) - 1 ' UBound(RPL, 1)の1は行の意味。　2だと列のようだ
@@ -142,7 +142,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     Select Case sheet.Name
         Case "まとめ "
             Dim lastRow As Long
-            lastRow = sheet.Cells(Rows.Count, "B").End(xlUp).ROW     '列Bの最終行を取得
+            lastRow = sheet.Cells(Rows.Count, "B").End(xlUp).Row     '列Bの最終行を取得
             lastRow = lastRow + sheet.Cells(lastRow, "B").MergeArea.Rows.Count '列Bの最終行が結合されている場合があるので、結合行を追加
             sheet.PageSetup.PrintArea = "A1:N" & lastRow ' 印刷範囲をA1:N最終行に設定
         Case "Fault集計"
@@ -227,7 +227,7 @@ Sub 適切な箇所に改ページを入れる(ByVal sheet As Worksheet)
     End Select
     
     Debug.Print "sheet.Name: " & sheet.Name
-    Debug.Print "Last: " & Cells(Rows.Count, TARGET_COL).End(xlUp).ROW
+    Debug.Print "Last: " & Cells(Rows.Count, TARGET_COL).End(xlUp).Row
     For i = 0 To UBound(RPL, 1) - 1 ' UBound(RPL, 1)の1は行の意味。　2だと列のようだ
         Debug.Print "RPL(i, 0) : " & RPL(i, 0) & "  " & RPL(i, 1)
     Next
@@ -242,7 +242,7 @@ Sub 適切な箇所に改ページを入れる(ByVal sheet As Worksheet)
         Debug.Print "Debug: RPL(" & i & ", *) : 「" & RPL(i, 0) & "」   は      " & RPL(i, 1) & " 行目にあります"
         sheet.Rows(RPL(i, 1)).PageBreak = xlPageBreakManual ' 必須の改ページをセット
         If i = (UBound(RPL, 1) - 1) Then ' RPL配列の最後の場合
-            Call SetPagebreak(RPL(i, 1), Cells(Rows.Count, TARGET_COL).End(xlUp).ROW, TARGET_COL, LINE_CNT_PAGEBREAK, sheet)
+            Call SetPagebreak(RPL(i, 1), Cells(Rows.Count, TARGET_COL).End(xlUp).Row, TARGET_COL, LINE_CNT_PAGEBREAK, sheet)
         Else
             Call SetPagebreak(RPL(i, 1), RPL(i + 1, 1) - 1, TARGET_COL, LINE_CNT_PAGEBREAK, sheet)
         End If
@@ -250,7 +250,7 @@ Sub 適切な箇所に改ページを入れる(ByVal sheet As Worksheet)
     
     
     For p = 1 To sheet.HPageBreaks.Count
-        Debug.Print "Page = " & p & "   sheet.HPageBreaks(p).Location.Row = " & sheet.HPageBreaks(p).Location.ROW
+        Debug.Print "Page = " & p & "   sheet.HPageBreaks(p).Location.Row = " & sheet.HPageBreaks(p).Location.Row
     Next p
     
     Debug.Print "~~~~~~~~~~~~~~~~~~~~~    とりあえずのトータルの改ページ数：" & sheet.HPageBreaks.Count
@@ -275,12 +275,12 @@ Sub 適切な箇所に改ページを入れる(ByVal sheet As Worksheet)
     For p = 1 To sheet.HPageBreaks.Count
         'Debug.Print "Page = " & p & "   sheet.HPageBreaks(p).Location.Row = " & sheet.HPageBreaks(p).Location.Row
         
-        If sheet.HPageBreaks(p).Location.ROW > MARGIN_PAGEBREAK Then  'セットする改ページが MARGIN_PAGEBREAK 行より下の場合、改ページセット
-            PagebreakList(totalP, 0) = sheet.HPageBreaks(p).Location.ROW
+        If sheet.HPageBreaks(p).Location.Row > MARGIN_PAGEBREAK Then  'セットする改ページが MARGIN_PAGEBREAK 行より下の場合、改ページセット
+            PagebreakList(totalP, 0) = sheet.HPageBreaks(p).Location.Row
             PagebreakList(totalP, 1) = 0  'とりあえず、必須でない改ページ:0を入れとく
             
             For i = 0 To UBound(RPL, 1) - 1 ' UBound(RPL, 1)の1は行の意味。　2だと列のようだ
-                If sheet.HPageBreaks(p).Location.ROW = RPL(i, 1) Then
+                If sheet.HPageBreaks(p).Location.Row = RPL(i, 1) Then
                     'Debug.Print "必須RPL(i, 0) = " & RPL(i, 0) & "  RPL(i, 1)=" & RPL(i, 1) & " sheet.HPageBreaks(p).Location.Row= " & sheet.HPageBreaks(p).Location.Row
                     PagebreakList(totalP, 1) = 1 '必須の改ページのところにフラグ:1を立てる
                 End If

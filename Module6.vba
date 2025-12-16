@@ -59,7 +59,7 @@ Sub 利用時間Userに手動入力(BL As Integer)
     wb_SHUKEI.Worksheets("利用時間(User)").Activate
     
     LineSta = getLineNum("ユニット", 2, wb_SHUKEI.Worksheets("利用時間(User)"))
-    LineSto = wb_SHUKEI.Worksheets("利用時間(User)").Cells(Rows.Count, "B").End(xlUp).ROW
+    LineSto = wb_SHUKEI.Worksheets("利用時間(User)").Cells(Rows.Count, "B").End(xlUp).Row
     Debug.Print " LineSto :   " & LineSto
     Dim Kokokara As Long
     Dim Kokomade As Long
@@ -72,8 +72,8 @@ Sub 利用時間Userに手動入力(BL As Integer)
             Exit For
         End If
     Next
-    Debug.Print "利用時間(User)の最終行 = " & wb_SHUKEI.Worksheets("利用時間(User)").Range(wb_SHUKEI.Worksheets("利用時間(User)").Columns(15).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).ROW '罫線含まない最終行
-    Kokomade = wb_SHUKEI.Worksheets("利用時間(User)").Range(wb_SHUKEI.Worksheets("利用時間(User)").Columns(15).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).ROW
+    Debug.Print "利用時間(User)の最終行 = " & wb_SHUKEI.Worksheets("利用時間(User)").Range(wb_SHUKEI.Worksheets("利用時間(User)").Columns(15).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row '罫線含まない最終行
+    Kokomade = wb_SHUKEI.Worksheets("利用時間(User)").Range(wb_SHUKEI.Worksheets("利用時間(User)").Columns(15).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row
     Range("O" & Kokokara & ":" & "O" & Kokomade).Select
 
     Windows.Arrange ArrangeStyle:=xlVertical

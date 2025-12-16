@@ -64,7 +64,7 @@ Sub Fault集計m(BL As Integer)
     ActiveSheet.Copy after:=ActiveSheet 'シートのコピー'
     ActiveSheet.Name = SNAME_FAULT 'シート名変更'
     
-    最終行 = Cells(Rows.Count, 8).End(xlUp).ROW
+    最終行 = Cells(Rows.Count, 8).End(xlUp).Row
     
     Range("A1:R" & 最終行).Value = Range("A1:R" & 最終行).Value '値の代入'
     
@@ -105,15 +105,15 @@ Sub Fault集計m(BL As Integer)
             Case 3
                 Debug.Print ">>>BL3" 'BL3 の場合はB列の最終行からさかのぼる
                 Dim xlLastRow As Long
-                xlLastRow = wb_MATOME.Worksheets("Fault集計").UsedRange.Rows(wb_MATOME.Worksheets("Fault集計").UsedRange.Rows.Count).ROW 'UsedRangeの注意点　罫線なども含んだ使用されている領域
+                xlLastRow = wb_MATOME.Worksheets("Fault集計").UsedRange.Rows(wb_MATOME.Worksheets("Fault集計").UsedRange.Rows.Count).Row 'UsedRangeの注意点　罫線なども含んだ使用されている領域
                 beginL = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計"))
-                EndL = wb_MATOME.Worksheets("Fault集計").Cells(xlLastRow, 2).End(xlUp).ROW   'B列の最終行を取得
+                EndL = wb_MATOME.Worksheets("Fault集計").Cells(xlLastRow, 2).End(xlUp).Row   'B列の最終行を取得
             Case Else
                 MsgBox "BLが不正です。終了します。", vbCritical
                 End
         End Select
         
-        For i = getLineNum_RS("ユニット", 2, beginL, EndL, wb_MATOME.Worksheets("Fault集計")) To wb_MATOME.Worksheets("Fault集計").UsedRange.Rows(wb_MATOME.Worksheets("Fault集計").UsedRange.Rows.Count).ROW
+        For i = getLineNum_RS("ユニット", 2, beginL, EndL, wb_MATOME.Worksheets("Fault集計")) To wb_MATOME.Worksheets("Fault集計").UsedRange.Rows(wb_MATOME.Worksheets("Fault集計").UsedRange.Rows.Count).Row
             Debug.Print "i = " & i & "  " & Cells(i, 2).Value
             If IsEmpty(wb_MATOME.Worksheets("Fault集計").Cells(i, 2).Value) And Not wb_MATOME.Worksheets("Fault集計").Cells(i, 2).MergeCells Then
                 targetline = i

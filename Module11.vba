@@ -47,7 +47,7 @@ Sub 運転集計_形式処理m(BL As Integer)
     Dim 最終行 As Integer
     Dim シート名 As String
 
-    最終行 = Cells(Rows.Count, 16).End(xlUp).ROW
+    最終行 = Cells(Rows.Count, 16).End(xlUp).Row
     シート名 = (Cells(8, 2).Value & "(BL" & BL & ")")
 
     Call 高速化処理開始
@@ -63,12 +63,12 @@ Sub 運転集計_形式処理m(BL As Integer)
     ActiveSheet.Name = シート名 'シート名変更'
     Range("A1:P" & 最終行).Value = Range("A1:P" & 最終行).Value '数式⇒値へ変換'
 
-    If Cells(Range("P1:P500").Find("条件_開始行").ROW + 1, 7) = "" Then 'ユーザーがいないとき'
-       Rows(Range("P1:P500").Find("シフト毎_開始行").ROW + 1 & ":" & Range("P1:P500").Find("シフト毎_終了行").ROW).Delete
-       Rows(Range("P1:P500").Find("条件_開始行").ROW + 1 & ":" & Range("P1:P500").Find("シフトユーザー_終了行").ROW).Delete
+    If Cells(Range("P1:P500").Find("条件_開始行").Row + 1, 7) = "" Then 'ユーザーがいないとき'
+       Rows(Range("P1:P500").Find("シフト毎_開始行").Row + 1 & ":" & Range("P1:P500").Find("シフト毎_終了行").Row).Delete
+       Rows(Range("P1:P500").Find("条件_開始行").Row + 1 & ":" & Range("P1:P500").Find("シフトユーザー_終了行").Row).Delete
     Else
-       Call 空白削除(Range("P1:P500").Find("シフト毎_開始行").ROW + 1, Range("P1:P500").Find("シフト毎_終了行").ROW - 1, 3)  'シフト毎_空白削除'
-       Call 空白削除(Range("P1:P500").Find("条件_開始行").ROW + 1, Range("P1:P500").Find("条件_終了行").ROW - 1, 3) '条件_空白削除'
+       Call 空白削除(Range("P1:P500").Find("シフト毎_開始行").Row + 1, Range("P1:P500").Find("シフト毎_終了行").Row - 1, 3)  'シフト毎_空白削除'
+       Call 空白削除(Range("P1:P500").Find("条件_開始行").Row + 1, Range("P1:P500").Find("条件_終了行").Row - 1, 3) '条件_空白削除'
        Call シフトユーザー行挿入
        Call シフトユーザー行_削除
        Call 条件行_罫線

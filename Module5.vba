@@ -106,15 +106,13 @@ Sub Final_Check(BL As Integer)
     Else
         Call CMsg("予定と総運転時間が合致", vbInformation, Range("E" & 8))
     End If
+
     
-    If Range("E" & 8).Value <> (Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) Then
+    If Not CheckValMatch(Range("E" & 8).Value, Range("F" & 8).Value + Range("I" & LineSta).Value + Range("K" & LineSta).Value) Then
         Call CMsg("総運転時間が[施設調整+利用調整+利用運転]の合計と一致しません。", vbCritical, Range("F" & 8))
     Else
         Call CMsg("総運転時間が[施設調整+利用調整+利用運転]の合計と合致", vbInformation, Range("F" & 8))
     End If
-    
-
-
 
 
     wb_MATOME.Worksheets("Fault集計").Activate    'これ大事======================================================================================
@@ -124,7 +122,7 @@ Sub Final_Check(BL As Integer)
         LineSto = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計")) - 1
     Else
         LineSta = getLineNum("SACLA Fault間隔(BL3)", 2, wb_MATOME.Worksheets("Fault集計"))
-        LineSto = wb_MATOME.Worksheets("Fault集計").Cells(Rows.Count, "C").End(xlUp).ROW ' B列の最終行だと結合されているので、C列にした
+        LineSto = wb_MATOME.Worksheets("Fault集計").Cells(Rows.Count, "C").End(xlUp).Row ' B列の最終行だと結合されているので、C列にした
     End If
 
     CheckAllDuplicatesByRange (wb_MATOME.Worksheets("Fault集計").Range("B" & LineSta & ":B" & LineSto))
@@ -146,7 +144,7 @@ Sub Final_Check(BL As Integer)
                     tc.Select
                     tc.Interior.Color = RGB(0, 255, 0)
                     'Sleep 100    ' msec
-                    If tc.MergeArea.Columns.Count > 1 Or tc.MergeArea.Rows(1).ROW <> j Then
+                    If tc.MergeArea.Columns.Count > 1 Or tc.MergeArea.Rows(1).Row <> j Then
                         Debug.Print "水平方向に結合されてる、または、垂直方向に結合されていて先頭です。" & i & "   " & j & "   " & COL
                     Else
                         If IsCellErrorType(tc) = False Or IsEmpty(tc.Value) Then Call CMsg("空欄、または、エラーが発生しています", vbCritical, tc)
@@ -337,7 +335,7 @@ Sub Final_Check(BL As Integer)
         LineSto = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ ")) - 1
     Else
         LineSta = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
-        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).ROW
+        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).Row
     End If
 
     CheckAllDuplicatesByRange (wb_MATOME.Worksheets("まとめ ").Range("B" & LineSta & ":B" & LineSto))
@@ -485,7 +483,7 @@ Sub 運転状況集計まとめの追編集(BL As Integer)
         LineSto = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
     Else
         LineSta = getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets("まとめ "))
-        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).ROW
+        LineSto = wb_MATOME.Worksheets("まとめ ").Cells(Rows.Count, "B").End(xlUp).Row
     End If
 
 

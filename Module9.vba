@@ -245,10 +245,10 @@ Function Find_targetcell_and_paste(ByVal Category As String, ByVal TARGET_COL As
         sheet.Activate
         ActiveWindow.Zoom = 60
                 
-        Debug.Print "sheet.UsedRange.Rows.Count: " & sheet.UsedRange.Rows.Count & "     sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row: " & sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).ROW
+        Debug.Print "sheet.UsedRange.Rows.Count: " & sheet.UsedRange.Rows.Count & "     sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row: " & sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row
         
         'For i = getLineNum(Category, TARGET_COL, sheet) To sheet.Cells(Rows.Count, TARGET_COL).End(xlUp).Row
-        For i = getLineNum(Category, TARGET_COL, sheet) To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).ROW
+        For i = getLineNum(Category, TARGET_COL, sheet) To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row
             'Debug.Print "行番号: " & i & "    Value: " & sheet.Cells(i, TARGET_COL).Value & "      Cells(i, TARGET_COL).MergeArea.Rows.Count = " & Cells(i, 2).MergeArea.Rows.Count
             If sheet.Cells(i, TARGET_COL).Value = "" Then '
                 Debug.Print "空なので、ここに貼り付けます！！！！　行番号: " & i & "    Value: " & sheet.Cells(i, TARGET_COL).Value
@@ -276,17 +276,19 @@ End Function
 '==============================================================================================================================
 Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Nen As Integer, Tsuki As Integer)
     Dim Command As String
-    Dim LogNOTE As String
+    Dim LogNOTE_from As String
+    Dim LogNOTE_to As String
     Dim result As Boolean
-    LogNOTE = Nen & "_" & Tsuki & ".xlsm"
+    LogNOTE_from = Nen & "_" & Tsuki & ".xlsm"
+    LogNOTE_to = Nen & "_" & Tsuki & "_SACLA.xlsm"
 '    MsgBox TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE
-    result = CopyFileSafely(TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE, DIST_PATH & "\" & LogNOTE)
+    result = CopyFileSafely(TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE_from, DIST_PATH & "\" & LogNOTE_to)
     If Not result Then
         MsgBox "コピー失敗…　終了します。", vbCritical
         End If
 '    Exit Sub
     Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
-               "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
+               "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE_to & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
                "read -p '処理が完了しました。Enterキーを押すと終了します...'"
     ExecuteGitBashCommand Command
 End Sub

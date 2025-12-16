@@ -156,12 +156,12 @@ Sub ユニットBL2とBL3をマージ()
 
     '(c)運転条件　  の部分の処理
     wb_MATOME.Worksheets(TargetUnit & "(BL3)").Activate ' これ大事　これしないと .Selectできない
-    MaxRow = wb_MATOME.Worksheets(TargetUnit & "(BL3)").UsedRange.Rows(wb_MATOME.Worksheets(TargetUnit & "(BL3)").UsedRange.Rows.Count).ROW 'UsedRangeの注意点　罫線なども含んだ使用されている領域
+    MaxRow = wb_MATOME.Worksheets(TargetUnit & "(BL3)").UsedRange.Rows(wb_MATOME.Worksheets(TargetUnit & "(BL3)").UsedRange.Rows.Count).Row 'UsedRangeの注意点　罫線なども含んだ使用されている領域
     wb_MATOME.Worksheets(TargetUnit & "(BL3)").Rows(getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets(TargetUnit & "(BL3)")) & ":" & MaxRow - 1).Copy
     wb_MATOME.Worksheets(TargetUnit & "(BL3)").Rows(getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets(TargetUnit & "(BL3)")) & ":" & MaxRow - 1).Select
     If MsgBox("選択されてる部分をコピーしました。シート「" & TargetUnit & "」" & vbCrLf & "に張り付けます。" & vbCrLf & "いいです？", vbYesNo + vbQuestion, "確認") = vbYes Then
         wb_MATOME.Worksheets(TargetUnit).Activate
-        MaxRow_of_TargetUnit = wb_MATOME.Worksheets(TargetUnit).UsedRange.Rows(wb_MATOME.Worksheets(TargetUnit).UsedRange.Rows.Count).ROW
+        MaxRow_of_TargetUnit = wb_MATOME.Worksheets(TargetUnit).UsedRange.Rows(wb_MATOME.Worksheets(TargetUnit).UsedRange.Rows.Count).Row
         wb_MATOME.Worksheets(TargetUnit).Cells(MaxRow_of_TargetUnit + 1, 1).Insert xlDown
         wb_MATOME.Worksheets(TargetUnit).Cells(getLineNum("(c-2)BL3", 2, wb_MATOME.Worksheets(TargetUnit)), 2).Select
         MsgBox "貼り付けました。" & vbCrLf & "。", Buttons:=vbInformation
