@@ -279,17 +279,20 @@ Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Ne
     Dim LogNOTE_from As String
     Dim LogNOTE_to As String
     Dim result As Boolean
-    LogNOTE_from = Nen & "_" & Tsuki & ".xlsm"
-    LogNOTE_to = Nen & "_" & Tsuki & "_SACLA.xlsm"
+    LogNOTE_from = Nen & "_" & Format(Tsuki, "00") & ".xlsm"
+    LogNOTE_to = Nen & "_" & Format(Tsuki, "00") & "_SACLA.xlsm"
 '    MsgBox TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE
-    result = CopyFileSafely(TARGET_PATH & "\" & Nen & "\" & Tsuki & "\" & LogNOTE_from, DIST_PATH & "\" & LogNOTE_to)
+    MsgBox LogNOTE_from
+    MsgBox LogNOTE_to
+    result = CopyFileSafely(TARGET_PATH & "\" & Nen & "\" & Format(Tsuki, "00") & "\" & LogNOTE_from, DIST_PATH & "\" & LogNOTE_to)
     If Not result Then
         MsgBox "コピー失敗…　終了します。", vbCritical
-        End If
-'    Exit Sub
-    Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
-               "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE_to & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
-               "read -p '処理が完了しました。Enterキーを押すと終了します...'"
-    ExecuteGitBashCommand Command
+    Else
+        Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
+                   "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE_to & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
+                   "read -p '処理が完了しました。Enterキーを押すと終了します...'"
+        ExecuteGitBashCommand Command
+    End If
+
 End Sub
 

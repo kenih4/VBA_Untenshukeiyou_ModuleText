@@ -1,11 +1,12 @@
-SACLASCSS+運転状�?�?�?24-9/
+SACLASCSS+運転状況24-9/
 MOTO/
 bk/
 test.py
 test.txt
-利用時間�?ン�?.xlsx
-unten - ショートカ�?�?.lnk
+利用時間表.xlsx
+unten - ショートカット.lnk
 *.xlsx
 *.xlsm
 .venv/
 .vscode/
+__pycache__/
