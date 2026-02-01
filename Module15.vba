@@ -182,11 +182,18 @@ End Sub
 
 
 
-
 Sub 作成前のバックアップ取得()
+    Call バックアップ取得("作成前")
+End Sub
+
+Sub 完了のバックアップ取得()
+    Call バックアップ取得("完了")
+End Sub
+
+Sub バックアップ取得(Comment As String)
     Dim result As Boolean
     Dim createdPath As String
-    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_作成前")
+    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_" & Comment)
     If createdPath <> "" Then
 '        MsgBox "フォルダ作成成功：" & createdPath
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転集計記録.xlsm", createdPath & "\SACLA運転集計記録.xlsm")
@@ -208,7 +215,7 @@ Sub 作成前のバックアップ取得()
     Else
         MsgBox "フォルダ作成に失敗しました。", vbCritical
     End If
-    MsgBox "作成前のバックアップ取得、完了", vbInformation
+    MsgBox Comment & "のバックアップ取得、完了", vbInformation
     shell "explorer.exe " & createdPath, vbNormalFocus
 End Sub
 
