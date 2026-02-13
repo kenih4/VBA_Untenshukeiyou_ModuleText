@@ -12,15 +12,22 @@ Sub TEST_Button_Click()
     
     
     
-    Dim pattern As String
-    pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
-    If Not IsValidFormat(ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW), pattern) Then
-        Call CMsg("Err セル [" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW))
-    Else
-        Call CMsg("OK セル [" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value & "] の値が ユニットの形式（例: 2-11）です", vbInformation, ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW))
+'    Dim pattern As String
+'    pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
+'    If Not IsValidFormat(ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW), pattern) Then
+'        Call CMsg("Err セル [" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW))
+'    Else
+'        Call CMsg("OK セル [" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value & "] の値が ユニットの形式（例: 2-11）です", vbInformation, ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW))
+'    End If
+    
+    
+    If Not CheckServerAccess_FSO("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\ScreenInfo.xlsm") Then
+        Exit Sub
     End If
     
-    
+    If Not CheckServerAccess_FSO("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\") Then
+        Exit Sub
+    End If
     
     
 '    MsgBox vbInformation

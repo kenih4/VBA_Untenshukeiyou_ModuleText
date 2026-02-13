@@ -193,7 +193,12 @@ End Sub
 Sub バックアップ取得(Comment As String)
     Dim result As Boolean
     Dim createdPath As String
-    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_" & Comment)
+    
+    If Not CheckServerAccess_FSO("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\") Then
+        Exit Sub
+    End If
+'    createdPath = CreateFolderWithAutoRename("C:\Users\kenic\OneDrive\Desktop\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_" & Comment)
+    createdPath = CreateFolderWithAutoRename("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_" & Comment)
     If createdPath <> "" Then
 '        MsgBox "フォルダ作成成功：" & createdPath
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転集計記録.xlsm", createdPath & "\SACLA運転集計記録.xlsm")

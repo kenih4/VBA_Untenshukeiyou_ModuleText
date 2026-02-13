@@ -25,14 +25,25 @@ Function CheckServerAccess_FSO(ByVal fullNetworkFilePath As String) As Boolean
     
     Set fso = CreateObject("Scripting.FileSystemObject")
     
-    If fso.FileExists(fullNetworkFilePath) Then
-        CheckServerAccess_FSO = True ' アクセス成功
-        'ThisWorkbook.sheetS("手順").Range("B2").Value = "Connect" '定期的な監視はやめたのでコメントアウト
-        'MsgBox "OK@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスOK", vbInformation
-        Debug.Print "アクセス成功==="
+    If fullNetworkFilePath Like "*\" Then
+'        MsgBox "末尾は \ です"
+        If fso.FolderExists(fullNetworkFilePath) Then
+            CheckServerAccess_FSO = True ' アクセス成功
+            Debug.Print "アクセス成功==="
+        Else
+            MsgBox "Err@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスできません。ネットワーク接続の問題か、フォルダが存在しないか、アクセス権がありません。", vbCritical
+        End If
     Else
-        MsgBox "Err@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスできません。ネットワーク接続の問題か、ファイルが存在しないか、アクセス権がありません。", vbCritical
+        If fso.FileExists(fullNetworkFilePath) Then
+            CheckServerAccess_FSO = True ' アクセス成功
+            'ThisWorkbook.sheetS("手順").Range("B2").Value = "Connect" '定期的な監視はやめたのでコメントアウト
+            'MsgBox "OK@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスOK", vbInformation
+            Debug.Print "アクセス成功==="
+        Else
+            MsgBox "Err@CheckServerAccess_FSO  " & fullNetworkFilePath & "' にアクセスできません。ネットワーク接続の問題か、ファイルが存在しないか、アクセス権がありません。", vbCritical
+        End If
     End If
+
     
     Set fso = Nothing
     Exit Function ' 正常終了時はエラーハンドラをスキップ
