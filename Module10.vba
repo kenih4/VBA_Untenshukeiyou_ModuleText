@@ -44,7 +44,7 @@ Sub Fault集計m(BL As Integer)
     
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     wb_SHUKEI.Worksheets("Fault間隔(ユニット)").Activate
-    wb_SHUKEI.Worksheets("Fault間隔(ユニット)").PageSetup.PrintArea = "" ' 20241113追加　印刷範囲が狭かった場合、範囲外が灰色なので選択しても見えないので印刷範囲をクリア
+    wb_SHUKEI.Worksheets("Fault間隔(ユニット)").PageSetup.printArea = "" ' 20241113追加　印刷範囲が狭かった場合、範囲外が灰色なので選択しても見えないので印刷範囲をクリア
     
     If MsgBox("選択されてるユニット(シート「利用時間（期間）」のセルB2)は    " & vbCrLf & wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2") & "   です。 " & vbCrLf & "間違いないですか？" & vbCrLf & "進むにはYESを押して下さい", vbYesNo + vbQuestion, "BL" & BL) = vbNo Then
         Call Fin("「No」が選択されました", 1)

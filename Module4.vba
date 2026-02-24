@@ -8,6 +8,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     Dim add_up As Integer: add_up = 0
     Dim i As Integer
     Dim h As Integer
+    Dim msg As String
     
     Debug.Print "============================================================================================================"
     Debug.Print "============適切な箇所に改ページを入れるVer2================================================================"
@@ -81,7 +82,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
 
     
     sheet.ResetAllPageBreaks ' 全ての貝をクリア
-    sheet.PageSetup.PrintArea = "" ' 印刷範囲のクリア
+    sheet.PageSetup.printArea = "" ' 印刷範囲のクリア
     
 
     For i = 1 To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row
@@ -94,7 +95,9 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
                 If i - Before_PB < 10 Then
                     Debug.Print "前の貝とあまりに近すぎるのでパスします。" & i & "       Before_PB = " & Before_PB & "    Value: " & Cells(i, 2).Value
                 Else
-                    sheet.Rows(i).PageBreak = xlPageBreakManual  '  2より大きくないとCells(i, 2).MergeArea.Rows.Countで、エラー　　　2だと2行目の上に引かれる
+                    If Not PageBreakInsert(sheet, i, msg) Then
+                        MsgBox "改ページを設定できませんでした: " & msg
+                    End If
                     Cells(i, TARGET_COL).Activate
                     Before_PB = i
                     If MsgBox("Debug:このセルの上に　必須　貝いれました" & vbCrLf & "次に進むにはYes", vbYesNo + vbQuestion, "確認") = vbNo Then Exit Sub
@@ -111,8 +114,9 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
             'Debug.Print "A  行番号: " & i & "   add_up = " & add_up & "    Value: " & Cells(i, 2).Value & "    値が入って、結合されている"
             If (i + Cells(i, TARGET_COL).MergeArea.Rows.Count - Before_PB) > AUTO_PB_LINE_CNT Then ' i+結合行-前貝行が　AUTO_PB_LINE_CNT　を越えたら
                 Debug.Print "この行は結合されてて、次はOverしちゃうのでここに貝 " & i & "       Before_PB = " & Before_PB & "    Value: " & Cells(i, 2).Value
-                '下のコードで失敗する場合、ページレイアウトから「印刷範囲のクリア」をして再度マクロを実行するとなぜかＯＫ
-                sheet.Rows(i).PageBreak = xlPageBreakManual  '  2より大きくないとCells(i, 2).MergeArea.Rows.Countで、エラー　　　2だと2行目の上に引かれる
+                If Not PageBreakInsert(sheet, i, msg) Then
+                    MsgBox "改ページを設定できませんでした: " & msg
+                End If
                 Cells(i, TARGET_COL).Activate
                 If MsgBox("Debug:このセルの上に　A　貝いれました" & vbCrLf & "次に進むにはYes", vbYesNo + vbQuestion, "確認") = vbNo Then Exit Sub
                 add_up = 0
@@ -122,7 +126,9 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
 
         If (Not Cells(i, TARGET_COL).MergeCells) And add_up > AUTO_PB_LINE_CNT Then  '　セルが結合されてなくて、かつ時期
              Debug.Print "この行は結合されてなくて、かつ時期    行番号: " & i & "   add_up = " & add_up & "    Value: " & Cells(i, 2).Value
-             sheet.Rows(i).PageBreak = xlPageBreakManual
+            If Not PageBreakInsert(sheet, i, msg) Then
+                MsgBox "改ページを設定できませんでした: " & msg
+            End If
              Cells(i, TARGET_COL).Activate
              If MsgBox("Debug:このセルの上に　B　貝いれました" & vbCrLf & "次に進むにはYes", vbYesNo + vbQuestion, "確認") = vbNo Then Exit Sub
              add_up = 0
@@ -137,21 +143,19 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     
     
     
-    
 
     Select Case sheet.Name
         Case "まとめ "
             Dim lastRow As Long
             lastRow = sheet.Cells(Rows.Count, "B").End(xlUp).Row     '列Bの最終行を取得
             lastRow = lastRow + sheet.Cells(lastRow, "B").MergeArea.Rows.Count '列Bの最終行が結合されている場合があるので、結合行を追加
-            sheet.PageSetup.PrintArea = "A1:N" & lastRow ' 印刷範囲をA1:N最終行に設定
+            sheet.PageSetup.printArea = "A1:N" & lastRow ' 印刷範囲をA1:N最終行に設定
         Case "Fault集計"
         Case Else
             Debug.Print "Zzz..."
     End Select
-    
-    
-    
+
+
     
     
     
@@ -438,3 +442,57 @@ Sub PrintPDF(ByVal sheet As Worksheet)
 End Sub
 
 
+
+
+'=======================================
+'改ページをいれられない原因が複数あるとのことだけど、これらの原因を考慮して改ページを入れる関数を作ってほしい。具体的にはFunction PageBreakInsert(ByVal sheet As Worksheet, Line As Int)のようにシート名と挿入したい改ページ行を引数にとって、成否を返り値に欲しい
+'=======================================
+Function PageBreakInsert(ByVal sheet As Worksheet, _
+                         ByVal Line As Long, _
+                         ByRef Reason As String) As Boolean
+    On Error GoTo ErrHandler
+
+    Dim ws As Worksheet
+    Set ws = sheet
+
+    '--- 1. 行番号チェック
+    If Line <= 1 Or Line > ws.Rows.Count Then
+        Reason = "行番号が不正（1行目または範囲外）"
+        PageBreakInsert = False
+        Exit Function
+    End If
+
+    '--- 2. 行が非表示
+    If ws.Rows(Line).Hidden = True Then
+        Reason = "対象行が非表示のため改ページ不可"
+        PageBreakInsert = False
+        Exit Function
+    End If
+
+    '--- 3. 印刷タイトル（繰り返し行）が設定されている
+    Dim titleRows As String
+    titleRows = ws.PageSetup.PrintTitleRows
+    If titleRows <> "" Then
+        ws.PageSetup.PrintTitleRows = ""
+    End If
+
+    '--- 4. 改ページをリセット（自動改ページの干渉回避）
+    'ws.ResetAllPageBreaks
+
+    '--- 5. 列方向の改ページを解除
+    'Dim col As Long
+    'For col = 1 To ws.UsedRange.Columns.Count
+    '    ws.Columns(col).PageBreak = xlPageBreakNone
+    'Next col
+
+    '--- 6. 改ページ設定
+    ws.Rows(Line).PageBreak = xlPageBreakManual
+
+    PageBreakInsert = True
+    Reason = ""
+    Exit Function
+
+ErrHandler:
+    Reason = "Excel が改ページを拒否（詳細: " & Err.Description & "）"
+    PageBreakInsert = False
+End Function

@@ -169,7 +169,7 @@ Sub ユニットBL2とBL3をマージ()
 
 
     'wb_MATOME.Worksheets(TargetUnit).ResetAllPageBreaks ' 全ての改ページをクリア
-    wb_MATOME.Worksheets(TargetUnit).PageSetup.PrintArea = False ' 全ての印刷範囲をクリア
+    wb_MATOME.Worksheets(TargetUnit).PageSetup.printArea = False ' 全ての印刷範囲をクリア
 
     
     Call Fin("これで終了です。" & vbCrLf & "シート「ユニット(BL*)」は手動で削除して下さい", 1)

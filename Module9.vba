@@ -179,7 +179,7 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
 
 
     'wb_MATOME.Worksheets(TargetUnit).ResetAllPageBreaks ' 全ての改ページをクリア
-    wb_MATOME.Worksheets(TargetUnit).PageSetup.PrintArea = False ' 全ての印刷範囲をクリア
+    wb_MATOME.Worksheets(TargetUnit).PageSetup.printArea = False ' 全ての印刷範囲をクリア
 
     
     Call Fin("これで終了です。", 1)

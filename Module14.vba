@@ -416,7 +416,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     Dim result As Boolean
     Dim StartL As Integer
     Dim i As Integer
-    Dim COL As Variant
+    Dim col As Variant
     Check = 0
     
     sheet.Activate
@@ -433,21 +433,21 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     sheet.Cells(StartL, arr(0)).Select
     MsgBox "シート「" & sheet.Name & "」のここから、この行に入っている数式が以降 " & Check_row_cnt & " 行に渡って入っているかチェックを始めます。", vbInformation
 
-    For Each COL In arr
+    For Each col In arr
         For i = StartL + 1 To StartL + Check_row_cnt
-            sheet.Cells(i, COL).Select
+            sheet.Cells(i, col).Select
             'Sleep 20 ' msec
-            result = CheckSameFormulaType(Cells(StartL, COL), Cells(i, COL))
+            result = CheckSameFormulaType(Cells(StartL, col), Cells(i, col))
             If result = True Then
-                Debug.Print "OK:    セル(" & i & ", " & COL & ") 数式有  " & Cells(i, COL).Formula
+                Debug.Print "OK:    セル(" & i & ", " & col & ") 数式有  " & Cells(i, col).Formula
                 'Cells(i, col).Interior.Color = RGB(0, 255, 0)  色付けると非常に時間が掛かる
             Else
-                Debug.Print "要確認！　セル(" & i & ", " & COL & ") 数式が入っていないか、数式が異なる"
-                Cells(i, COL).Interior.Color = RGB(255, 0, 0)
+                Debug.Print "要確認！　セル(" & i & ", " & col & ") 数式が入っていないか、数式が異なる"
+                Cells(i, col).Interior.Color = RGB(255, 0, 0)
                 Check = Check + 1
             End If
         Next
-    Next COL
+    Next col
     If Check <> 0 Then
         MsgBox "シート「" & sheet.Name & "」にて、" & vbCrLf & "数式が入っていないか、数式が異なるセルが " & Check & " 箇所、見つかりました！！要確認です", vbCritical
     End If

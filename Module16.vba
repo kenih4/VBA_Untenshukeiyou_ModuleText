@@ -19,17 +19,8 @@ Sub TEST_Button_Click()
 '    Else
 '        Call CMsg("OK セル [" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW).Value & "] の値が ユニットの形式（例: 2-11）です", vbInformation, ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW))
 '    End If
-    
-    
-    If Not CheckServerAccess_FSO("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\ScreenInfo.xlsm") Then
-        Exit Sub
-    End If
-    
-    If Not CheckServerAccess_FSO("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\") Then
-        Exit Sub
-    End If
-    
-    
+
+
 '    MsgBox vbInformation
 
 '    MsgBox vbExclamation
