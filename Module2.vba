@@ -170,7 +170,22 @@ Function CpPaste(sheetS As Worksheet, rangeS As String, colS As Integer, sheetT 
 '    MsgBox sheetS.Range("$C:$C").Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row    ' 2
 '    MsgBox sheetS.Range(Range(HeaderCELL).Columns.Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row    ' エラー
     Dim tr As Variant
+    Dim SetLastRow As Integer
     sheetS.Activate
+    
+    If CheckIsValidFormat(rangeS) Then
+        SetLastRow = ExtractNumber(rangeS)
+'        MsgBox "セル範囲のフォーマットは正しいです。" & SetLastRow, vbInformation
+    Else
+        MsgBox "セル範囲のフォーマットは正しくありません。", vbCritical
+        Exit Function
+    End If
+    
+    If SetLastRow > Cells(Rows.Count, colS).End(xlUp).Row Then
+        MsgBox "コピーする範囲はありません。", vbInformation
+        Exit Function
+    End If
+    
     Set tr = Range(rangeS & Cells(Rows.Count, colS).End(xlUp).Row)
     tr.Copy
     tr.Select
@@ -189,3 +204,35 @@ Function CpPaste(sheetS As Worksheet, rangeS As String, colS As Integer, sheetT 
 
 End Function
 
+
+Function CheckIsValidFormat(str As String) As Boolean
+    Dim regex As Object
+    Set regex = CreateObject("VBScript.RegExp")
+    
+    ' 正規表現のパターンを設定
+    regex.pattern = "^[A-Za-z0-9]+:[A-Za-z]+$"
+    regex.IgnoreCase = True
+    regex.Global = False
+    
+    ' フォーマットが一致するかどうかを判定
+    CheckIsValidFormat = regex.Test(str)
+End Function
+
+Function ExtractNumber(str As String) As String
+    Dim reg As Object
+    Set reg = CreateObject("VBScript.RegExp")
+    
+    With reg
+        .pattern = "\d+"    ' 数字が1回以上連続するパターン
+        .Global = False     ' 最初の1致のみ
+    End With
+    
+    Dim matches As Object
+    Set matches = reg.Execute(str)
+    
+    If matches.Count > 0 Then
+        ExtractNumber = matches(0).Value
+    Else
+        ExtractNumber = ""
+    End If
+End Function

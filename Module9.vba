@@ -53,7 +53,7 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
     
     '「ユニット(BL*)」というパターン表現の場合次ぎすすむ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Dim Hakken As Boolean
-    Dim regEx As Object
+    Dim regex As Object
     Dim testString As String
     Dim matches As Object
     Dim match As Object
@@ -64,7 +64,7 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
     testString = TargetSheet
 
     ' 正規表現オブジェクトの作成
-    Set regEx = CreateObject("VBScript.RegExp")
+    Set regex = CreateObject("VBScript.RegExp")
 
     
 '    pattern = "\d+-\d+\(BL\d\)"  ' 正規表現パターンの設定（部分一致を含む）
@@ -72,14 +72,14 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
     pattern = "^\d+-\d+"  ' 正規表現パターンの設定（完全一致）
 
     ' 正規表現のプロパティを設定
-    With regEx
+    With regex
         .Global = True         ' すべての一致を検索
         .IgnoreCase = True     ' 大文字と小文字を区別しない
         .pattern = pattern     ' 検索パターンを指定
     End With
 
     ' 文字列内の一致を検索
-    Set matches = regEx.Execute(testString)
+    Set matches = regex.Execute(testString)
 
     ' 一致した結果を表示
     For Each match In matches
@@ -88,7 +88,7 @@ Sub ユニットBLの結果をシートまとめに張り付ける()
     Next match
 
     ' オブジェクトのクリーンアップ
-    Set regEx = Nothing
+    Set regex = Nothing
     Set matches = Nothing
     
     If Hakken = False Then

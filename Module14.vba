@@ -859,20 +859,20 @@ Function IsDateTimeFormatRegEx(ByVal targetString As String) As Boolean
 '    Debug.Print IsDateTimeFormatRegEx("2023-1-1 9:0:0")     ' False (区切り文字が異なる)
 '    Debug.Print IsDateTimeFormatRegEx("ABCDEFG")            ' False
     
-    Dim regEx As Object
-    Set regEx = CreateObject("VBScript.RegExp") ' または New RegExp
+    Dim regex As Object
+    Set regex = CreateObject("VBScript.RegExp") ' または New RegExp
 
     
-    With regEx
+    With regex
         .pattern = "^\d{4}/(0?[1-9]|1[0-2])/(0?[1-9]|[12]\d|3[01])\s([01]?\d|2[0-3]):([0-5]?\d):([0-5]?\d)$"
         .IgnoreCase = False ' 大文字・小文字を区別しない場合はTrue
         .Global = False     ' 文字列全体で最初のマッチングのみを検索する場合はFalse
                             ' 文字列内のすべてのマッチを検索する場合はTrue
     End With
 
-    IsDateTimeFormatRegEx = regEx.Test(targetString)
+    IsDateTimeFormatRegEx = regex.Test(targetString)
 
-    Set regEx = Nothing
+    Set regex = Nothing
 End Function
 
 

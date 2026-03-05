@@ -612,18 +612,18 @@ End Function
 '--------------------------------------------------------------------------------------------------------------------------------------------
 ' セルの値が指定したパターンに一致するかチェックする関数
 Function IsValidFormat(cell As Variant, pattern As String) As Boolean
-    Dim regEx As Object
-    Set regEx = CreateObject("VBScript.RegExp")
+    Dim regex As Object
+    Set regex = CreateObject("VBScript.RegExp")
 
-    regEx.pattern = pattern
-    regEx.IgnoreCase = True
-    regEx.Global = False
+    regex.pattern = pattern
+    regex.IgnoreCase = True
+    regex.Global = False
 
     ' 正規表現がマッチするかを判定
-    IsValidFormat = regEx.Test(cell.Value)
+    IsValidFormat = regex.Test(cell.Value)
 
     ' オブジェクト解放
-    Set regEx = Nothing
+    Set regex = Nothing
 End Function
 
 
