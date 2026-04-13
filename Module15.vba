@@ -209,6 +209,8 @@ Sub バックアップ取得(Comment As String)
         result = CopyFileSafely(CPATH & "SCSS" & "\SCSS運転集計記録.xlsm", createdPath & "\SCSS運転集計記録.xlsm")
         result = CopyFileSafely(CPATH & "SCSS" & "\SCSS運転集計記録.xlsm", createdPath & "\SCSS運転集計記録BL1.xlsm")
         
+        result = CopyFileSafely("C:\me\unten\マクロいろいろ.xlsm", createdPath & "\マクロいろいろ.xlsm")
+        
         If Not result Then
             MsgBox "コピー失敗…", vbCritical
         End If
