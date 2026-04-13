@@ -14,6 +14,7 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     Dim PasteSheet As Worksheet
     Dim PasteRow As Integer
     Dim pattern As String
+    Dim newunit As String
     Debug.Print "============================================================================================================"
 
 
@@ -67,7 +68,6 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     End Select
 
 
-
     ' wb_SHUKEIを開く
     Dim wb_SHUKEI As Workbook    ' ちゃんと宣言しないと、関数SheetExistsの引数が異なると怒られる
     Set wb_SHUKEI = OpenBook(BNAME_SHUKEI, False)    ' フルパスを指定
@@ -85,48 +85,59 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
     wb_KEIKAKU.Windows(1).WindowState = xlMaximized
     wb_KEIKAKU.Worksheets("GUN HV OFF").Select    '最前面に表示
 
-
     'コピーして貼り付け
     Set PasteSheet = wb_SHUKEI.Worksheets("GUN HV OFF時間記録")
-    PasteRow = PasteSheet.Range("C5").End(xlDown).Row + 1
+    If IsEmpty(Range("C6").Value) Then ' このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした
+        PasteRow = 6
+    Else
+        PasteRow = PasteSheet.Range("C5").End(xlDown).Row + 1
+    End If
     result = CpPaste(wb_KEIKAKU.Worksheets("GUN HV OFF"), RANGE_GUN_HV_OFF, Col_GUN_HV_OFF, PasteSheet, PasteSheet.Cells(PasteRow, 3), Array(2, 6, 7), 3)    '「シート GUN HV OFF」をコピーして貼り付け
 
     Set PasteSheet = wb_SHUKEI.Worksheets("運転予定時間")
-    PasteRow = PasteSheet.Range("B3").End(xlDown).Row + 1
+    If IsEmpty(Range("B4").Value) Then ' このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした
+        PasteRow = 4
+    Else
+        PasteRow = PasteSheet.Range("B3").End(xlDown).Row + 1
+    End If
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "A2:C", 1, PasteSheet, PasteSheet.Cells(PasteRow, 2), Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2)    '「シート bl*」をコピーして貼り付け
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "D2:D", 1, PasteSheet, PasteSheet.Cells(PasteRow, 7), -1, -1)    '「シート bl*の備考列」をコピーして貼り付け　' 前の行で、Check Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2  してるから本来いらないので-1
 
 
-
-
-    '「新しいユニット名を計算」
-    Dim before_unit As String
-    Dim latest_unit As Integer
-    Dim newunit As String
-    PasteSheet.Cells(PasteRow - 1, 1).Select
-    
-    pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
-    If Not IsValidFormat(PasteSheet.Cells(PasteRow - 1, 1), pattern) Then
-        Call CMsg("セル [" & PasteSheet.Cells(PasteRow - 1, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteRow - 1, 1))
-        Exit Sub
-    End If
-    
-    before_unit = PasteSheet.Cells(PasteRow - 1, 1)
-    Debug.Print "before_unit: " & before_unit
-    arr = Split(before_unit, "-")
-    If Not IsNumeric(arr(1)) Then
-        MsgBox "新しいユニット名を見繕うとしましたがユニット名がヘンです。 " & before_unit & vbCrLf & "終了します。", Buttons:=vbInformation
-        Exit Sub
-    End If
-    latest_unit = Val(arr(1))
-    latest_unit = latest_unit + 1
-    newunit = arr(0) + "-" + CStr(latest_unit)
-    Debug.Print "newunit: " & newunit
-    If newunit <> ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) Then
-        MsgBox "ユニット名が連続になりませんけど。今から出力しようとしているユニット名：" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & vbCrLf & "  newunit: " & newunit, Buttons:=vbExclamation
+    If PasteRow = 4 Then
+        MsgBox "年度初めですね。ユニットは" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & vbCrLf & "ですね。", Buttons:=vbInformation
+        newunit = ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)
     Else
-        MsgBox "OK!" & vbCrLf & "新しいユニット名合致!!!", Buttons:=vbInformation
+        '「新しいユニット名を計算」
+        Dim before_unit As String
+        Dim latest_unit As Integer
+        PasteSheet.Cells(PasteRow - 1, 1).Select
+        
+        pattern = "^[1-9][0-9]*-[1-9][0-9]*$" ' パターン: 先頭(^)から、1-9で始まる数字の塊、ハイフン、1-9で始まる数字の塊、末尾($)まで
+        If Not IsValidFormat(PasteSheet.Cells(PasteRow - 1, 1), pattern) Then
+            Call CMsg("セル [" & PasteSheet.Cells(PasteRow - 1, 1).Value & "] の値が ユニットの形式（例: 2-11）ではありません。終了します。", vbCritical, PasteSheet.Cells(PasteRow - 1, 1))
+            Exit Sub
+        End If
+        
+        before_unit = PasteSheet.Cells(PasteRow - 1, 1)
+        Debug.Print "before_unit: " & before_unit
+        arr = Split(before_unit, "-")
+        If Not IsNumeric(arr(1)) Then
+            MsgBox "新しいユニット名を見繕うとしましたがユニット名がヘンです。 " & before_unit & vbCrLf & "終了します。", Buttons:=vbInformation
+            Exit Sub
+        End If
+        latest_unit = Val(arr(1))
+        latest_unit = latest_unit + 1
+        newunit = arr(0) + "-" + CStr(latest_unit)
+        Debug.Print "newunit: " & newunit
+        If newunit <> ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) Then
+            MsgBox "ユニット名が連続になりませんけど。今から出力しようとしているユニット名：" & ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & vbCrLf & "  newunit: " & newunit, Buttons:=vbExclamation
+        Else
+            MsgBox "OK!" & vbCrLf & "新しいユニット名合致!!!", Buttons:=vbInformation
+        End If
     End If
+
+
     PasteSheet.Activate
     PasteSheet.Cells(PasteSheet.Range("B3").End(xlDown).Row, 1).Activate    ' セルB3[運転種別]の最終行へ
     If MsgBox("ここに新しいユニット " & newunit & "を入れていいですか？？", vbYesNo + vbQuestion, "newunit") = vbYes Then

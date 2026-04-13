@@ -183,7 +183,7 @@ End Sub
 Function CheckForErrors(ByVal sheet As Worksheet) As Boolean
   Dim cell As Range
   Dim errorRange As Range
-  CheckForErrors = False
+  CheckForErrors = True
   
   If sheet Is Nothing Then
     MsgBox "' のシート '" & sheet & "' は存在しません。", vbOKOnly + vbCritical

@@ -45,9 +45,13 @@ Sub Fault集計m(BL As Integer)
     wb_SHUKEI.Windows(1).WindowState = xlMaximized
     wb_SHUKEI.Worksheets("Fault間隔(ユニット)").Activate
     wb_SHUKEI.Worksheets("Fault間隔(ユニット)").PageSetup.printArea = "" ' 20241113追加　印刷範囲が狭かった場合、範囲外が灰色なので選択しても見えないので印刷範囲をクリア
-    
     If MsgBox("選択されてるユニット(シート「利用時間（期間）」のセルB2)は    " & vbCrLf & wb_SHUKEI.Worksheets("利用時間（期間）").Range("B2") & "   です。 " & vbCrLf & "間違いないですか？" & vbCrLf & "進むにはYESを押して下さい", vbYesNo + vbQuestion, "BL" & BL) = vbNo Then
         Call Fin("「No」が選択されました", 1)
+    End If
+    
+    If CheckForErrors(wb_SHUKEI.Worksheets("Fault間隔(ユニット)")) Then
+        MsgBox "シート「Fault間隔(ユニット)」 に数式エラーが発生してます。見直して下さい。終了します。", Buttons:=vbCritical
+        End
     End If
     '追加部分----------------------------/
 
@@ -61,11 +65,12 @@ Sub Fault集計m(BL As Integer)
     End If
     Application.DisplayAlerts = True   '--- 確認メッセージを表示
     
-    ActiveSheet.Copy after:=ActiveSheet 'シートのコピー'
+    ActiveSheet.Copy After:=ActiveSheet 'シートのコピー'
     ActiveSheet.Name = SNAME_FAULT 'シート名変更'
     
+    MsgBox "デバック　1048579でいい。Rows.Count = " & Rows.Count
     最終行 = Cells(Rows.Count, 8).End(xlUp).Row
-    
+    MsgBox "デバック　最終行 = " & 最終行
     Range("A1:R" & 最終行).Value = Range("A1:R" & 最終行).Value '値の代入'
     
     Call Fault_セル結合
@@ -86,7 +91,6 @@ Sub Fault集計m(BL As Integer)
         wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Select
         wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine, "I" & UnitLine + wb_SHUKEI.Worksheets(SNAME_FAULT).Range("B" & UnitLine).MergeArea.Rows.Count - 1).Copy
     End If
-    
     If MsgBox("選択されてる部分をコピーしました" & vbCrLf & "次は、「SACLA運転状況集計まとめ.xlsm」の「Fault集計」の張り付けです。" & vbCrLf & "ファイルを開きますか？", vbYesNo + vbQuestion, "BL" & BL) = vbYes Then
         
         ' wb_MATOMEを開く

@@ -120,7 +120,7 @@ Sub ユニットBL2とBL3をマージ()
     
     
     'BL2のシートをコピーしてベースにする
-    wb_MATOME.Worksheets(TargetUnit & "(BL2)").Copy after:=wb_MATOME.Worksheets("まとめ ") ' なぜかSCSS+ログノート用PCで実行すると、「名前'~～'は既に存在します」とメッセージが出る場合がある。とりあえず「はい」で進めるしかないので進めると、出来たシートに条件付き書式でなぜか赤印がつく。OFFICEのプロフェッショナルだと発生する。
+    wb_MATOME.Worksheets(TargetUnit & "(BL2)").Copy After:=wb_MATOME.Worksheets("まとめ ") ' なぜかSCSS+ログノート用PCで実行すると、「名前'~～'は既に存在します」とメッセージが出る場合がある。とりあえず「はい」で進めるしかないので進めると、出来たシートに条件付き書式でなぜか赤印がつく。OFFICEのプロフェッショナルだと発生する。
     ActiveSheet.Name = TargetUnit
     Cells.Select '　コピーしたことを視覚的に分かりやすくするため。なくてもいい
     MsgBox "シート「" & TargetUnit & "(BL2)" & "」をコピーしました。" & vbCrLf & "これを下地にします。", Buttons:=vbInformation
