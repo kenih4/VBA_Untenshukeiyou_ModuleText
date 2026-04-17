@@ -25,7 +25,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
 
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     '自動貝が一体何行で入るのかを確認
-    Dim AUTO_PB_LINE_CNT As Integer
+    Dim AUTO_PB_LINE_CNT As Integer: AUTO_PB_LINE_CNT = 50 ' 初期値は適当に設定した。だいたい50行くらいで自動貝されるようなので。
     Dim HPageBreak As HPageBreak
     sheet.ResetAllPageBreaks ' 全ての貝をクリア
     ' 水平方向の自動貝を確認
@@ -79,11 +79,14 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     Next
     
     Debug.Print "============================================================================================================"
-
     
     sheet.ResetAllPageBreaks ' 全ての貝をクリア
     sheet.PageSetup.printArea = "" ' 印刷範囲のクリア
-    
+    'MsgBox "sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row: " & sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row & "  AUTO_PB_LINE_CNT=" & AUTO_PB_LINE_CNT
+    If sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row < AUTO_PB_LINE_CNT Then
+        MsgBox "SACLA運転状況集計まとめ.xlsm のシート「" & sheet.Name & "」" & vbCrLf & "行数が少ないので貝ページを入れる必要はありません。", Buttons:=vbInformation
+        Exit Sub
+    End If
 
     For i = 1 To sheet.UsedRange.Rows(sheet.UsedRange.Rows.Count).Row
         
@@ -145,7 +148,7 @@ Sub 適切な箇所に改ページを入れるVer2(ByVal sheet As Worksheet)
     
 
     Select Case sheet.Name
-        Case "まとめ "
+        Case "まとめ " ' 下の方に、計算用なのかいらない部分があるので、とりあえず列Bの最終行までを
             Dim lastRow As Long
             lastRow = sheet.Cells(Rows.Count, "B").End(xlUp).Row     '列Bの最終行を取得
             lastRow = lastRow + sheet.Cells(lastRow, "B").MergeArea.Rows.Count '列Bの最終行が結合されている場合があるので、結合行を追加
@@ -366,7 +369,7 @@ End Sub
 
 
 'Not USE    改行は***行ごとくらいでいれる==============================================================================================================================
-Function SetPagebreak(ByVal startLine As Integer, ByVal endLine As Integer, ByVal TARGET_COL As Integer, ByVal LINE_CNT_PAGEBREAK As Integer, ByVal SheetName As Worksheet)
+Function SetPagebreak(ByVal startLine As Integer, ByVal endLine As Integer, ByVal TARGET_COL As Integer, ByVal LINE_CNT_PAGEBREAK As Integer, ByVal sheetName As Worksheet)
     'Debug.Print "SetPagebreak~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~startLine = "; startLine & "       endLine: " & endLine
     If (endLine - startLine) <= 0 Then
         MsgBox "引数異常"
@@ -392,7 +395,7 @@ Function SetPagebreak(ByVal startLine As Integer, ByVal endLine As Integer, ByVa
 '                    MsgBox "A   Debug:このセルの上に改ページいれます"
                     
                     '下のコードで失敗する場合、ページレイアウトから「印刷範囲のクリア」をして再度マクロを実行するとなぜかＯＫ
-                    SheetName.Rows(i + Cells(i, 2).MergeArea.Rows.Count).PageBreak = xlPageBreakManual  '  2より大きくないとCells(i, 2).MergeArea.Rows.Countで、エラー　　　2だと2行目の上に引かれる
+                    sheetName.Rows(i + Cells(i, 2).MergeArea.Rows.Count).PageBreak = xlPageBreakManual  '  2より大きくないとCells(i, 2).MergeArea.Rows.Countで、エラー　　　2だと2行目の上に引かれる
                 Else
                     Debug.Print "行番号: " & i & "   line_cnt = " & line_cnt & "    Value: " & Cells(i, 2).Value & "    値が入ってなくて、結合されてない　貝: i = " & i
                     
@@ -400,7 +403,7 @@ Function SetPagebreak(ByVal startLine As Integer, ByVal endLine As Integer, ByVa
 '                    MsgBox "B   Debug:このセルの上に改ページいれます"
                     
                             
-                    SheetName.Rows(i).PageBreak = xlPageBreakManual
+                    sheetName.Rows(i).PageBreak = xlPageBreakManual
                     
                 End If
                 line_cnt = 0

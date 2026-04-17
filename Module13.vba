@@ -123,7 +123,8 @@ Sub PDF_output_Click()
     For i = LBound(myArray) To UBound(myArray)
 '        MsgBox "要素 " & i & ": " & myArray(i)
         Set sheet = wb_MATOME.Worksheets(myArray(i))
-'       sheet.PrintPreview
+        sheet.PrintPreview
+        
         pdfPath = CPATH & WHICH & "\" & OutDir & "\" & WHICH & "運転状況集計(" & Replace(myArray(i), " ", "") & ").pdf"
         Debug.Print "pdfPath:   " & pdfPath
         ' シートをPDFとしてエクスポート
@@ -137,7 +138,7 @@ Sub PDF_output_Click()
         shell """" & edgePath & """ --new-window """ & pdfPath & """", vbNormalFocus
 '         shell """" & edgePath & """ --start-maximized """ & pdfPath & """", vbNormalFocus      [--start-maximized]オプションつけても最大化されず
         MsgBox "運転状況集計(" & myArray(i) & ").pdf" & vbCrLf & "を出力しました。", vbInformation
-        
+'        Exit For
     Next i
     
 End Sub

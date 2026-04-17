@@ -421,7 +421,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     
     sheet.Activate
 
-
+    Call CheckFormulaCells(sheet) ' 指定されたシートをスキャンし、数式が入っているセルで「セルの書式設定」の「表示項目」が文字列になっている場合に警告メッセージを表示
     '    MsgBox "Columns(Retsu_for_Find_last_row).Address　=     " & Columns(Retsu_for_Find_last_row).Address
 
     '    StartL = sheet.Range("B:B").Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1  ' 罫線は無視
@@ -902,3 +902,33 @@ Sub CheckScheduleContinuity(sheet As Worksheet)
     Next i
 End Sub
 
+
+
+
+
+'======= 指定されたシートをスキャンし、数式が入っているセルで「セルの書式設定」の「表示項目」が文字列になっている場合に警告メッセージを表示 =======
+Sub CheckFormulaCells(ws As Worksheet)
+    Dim cell As Range
+    Dim warningMessage As String
+    warningMessage = "次のセルに数式があるにも関わらず、書式設定の表示項目が文字列です:" & vbCrLf
+    
+    If ws Is Nothing Then
+        MsgBox "指定されたシート '" & ws & "' は存在しません。", vbExclamation
+        Exit Sub
+    End If
+    ws.Activate
+
+    For Each cell In ws.UsedRange
+        ' 数式が入っているかつ、表示形式が文字列であるかをチェック
+        If cell.HasFormula And cell.NumberFormat = "@" Then
+            warningMessage = warningMessage & cell.Address & vbCrLf
+            cell.Select
+        End If
+    Next cell
+    
+    If warningMessage <> "次のセルに数式があるにも関わらず、書式設定の表示項目が文字列です:" & vbCrLf Then
+        MsgBox warningMessage, vbExclamation, "警告"
+    Else
+        'MsgBox "セルに数式があり、表示項目が文字列となっているセルはありません。", vbInformation
+    End If
+End Sub
