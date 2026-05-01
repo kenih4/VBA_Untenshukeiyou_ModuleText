@@ -87,18 +87,19 @@ Sub cp_paste_KEIKAKUZIKAN_UNTENZYOKYOSYUKEI(BL As Integer)
 
     'コピーして貼り付け
     Set PasteSheet = wb_SHUKEI.Worksheets("GUN HV OFF時間記録")
-    If IsEmpty(Range("C6").Value) Then ' このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした
+    '
+    If PasteSheet.Range("C6").Value = "" Then 'このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした IsEmpty は“完全に空”だけを判定するため、空白チェックならこちらの方が安全
         PasteRow = 6
     Else
-        PasteRow = PasteSheet.Range("C5").End(xlDown).Row + 1
+        PasteRow = PasteSheet.Range("C6").End(xlDown).Row + 1
     End If
     result = CpPaste(wb_KEIKAKU.Worksheets("GUN HV OFF"), RANGE_GUN_HV_OFF, Col_GUN_HV_OFF, PasteSheet, PasteSheet.Cells(PasteRow, 3), Array(2, 6, 7), 3)    '「シート GUN HV OFF」をコピーして貼り付け
-
+    
     Set PasteSheet = wb_SHUKEI.Worksheets("運転予定時間")
-    If IsEmpty(Range("B4").Value) Then ' このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした
+    If PasteSheet.Range("B4").Value = "" Then 'このセルが空欄だった場合、Range(" ").End(xlDown).Rowは最終行1048576を返すのでif分にした IsEmpty は“完全に空”だけを判定するため、空白チェックならこちらの方が安全
         PasteRow = 4
     Else
-        PasteRow = PasteSheet.Range("B3").End(xlDown).Row + 1
+        PasteRow = PasteSheet.Range("B4").End(xlDown).Row + 1
     End If
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "A2:C", 1, PasteSheet, PasteSheet.Cells(PasteRow, 2), Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2)    '「シート bl*」をコピーして貼り付け
     result = CpPaste(wb_KEIKAKU.Worksheets(SNAME_KEIKAKU_BL), "D2:D", 1, PasteSheet, PasteSheet.Cells(PasteRow, 7), -1, -1)    '「シート bl*の備考列」をコピーして貼り付け　' 前の行で、Check Array(1, 3, 5, 6, 8, 9, 10, 11, 12, 13), 2  してるから本来いらないので-1

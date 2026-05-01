@@ -81,6 +81,7 @@ Sub 運転集計_形式処理m(BL As Integer)
                         ' 原因判明：　なんらかの理由で　「高速化処理終了」がなされなかった状態で、再度このプログラムを走らすと落ちる事が判明。その場合、手動で「高速化処理終了」を実行してやる。
 
     '/追加部分----------------------------
+    wb_SHUKEI.Worksheets(シート名).Cells(1, 1).Select
     If wb_SHUKEI.Worksheets(シート名).Cells(DOWNTIME_ROW, 9).Value = 0 Then
         MsgBox "利用調整運転(BL調整orBL-study)はなかったんですね。　" & vbCrLf & "", vbExclamation, "BL" & BL
     End If
