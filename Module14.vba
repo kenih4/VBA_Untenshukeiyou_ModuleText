@@ -60,13 +60,6 @@ Sub Initial_Check(BL As Integer)
         result = CheckForErrors(ws)
     Next ws
     
-'===============DEBUG
-
-    If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7), 3, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
-    'If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(9, 10, 11, 12, 13, 14, 15), 9, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
-    MsgBox "FINISH"
-    Exit Sub
-'===============
     If Check_exixt("運転予定時間", wb_SHUKEI) = True Then Cnt = Check(Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), 2, 30, wb_SHUKEI.Worksheets("運転予定時間"))
     If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7), 3, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
     If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(9, 10, 11, 12, 13, 14, 15), 9, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
@@ -75,6 +68,8 @@ Sub Initial_Check(BL As Integer)
     If Check_exixt("利用時間（期間）", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 25, 26, 27, 28, 29), 2, 30, wb_SHUKEI.Worksheets("利用時間(User)"))
     If Check_exixt("利用時間(シフト)", wb_SHUKEI) = True Then Cnt = Check(Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), 1, 30, wb_SHUKEI.Worksheets("利用時間(シフト)"))
     If Check_exixt("Fault間隔(ユニット)", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), 2, 30, wb_SHUKEI.Worksheets("Fault間隔(ユニット)")) ' シート名に半角スペースが入ってることがあるので注意　正しくしないと「インデックスが有効範囲にありません」とエラーメッセージがでける
+    If Check_exixt("運転状況(対象ユニット)", wb_SHUKEI) = True Then Cnt = Check(Array(3, 4, 5, 6, 7, 8, 9), -18, 29, wb_SHUKEI.Worksheets("運転状況(対象ユニット)"))
+    If Check_exixt("運転状況(対象ユニット)", wb_SHUKEI) = True Then Cnt = Check(Array(3, 4, 5, 6, 7), -55, 9, wb_SHUKEI.Worksheets("運転状況(対象ユニット)"))
     
     'シートの存在を確認する処理を追加するとこうなるが、見にくい。。。。。
 '    sname = "運転予定時間"
@@ -415,7 +410,7 @@ End Function
 ' セルに数式が入ってるかの確認
 Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt As Integer, sheet As Worksheet) As Integer
 ' arr:  チェックする列を配列にセット
-' Retsu_for_Find_last_row:  値の入っている最終行を取得するためのもの。数式が入っていない列を指定する。数式が入っている列を指定すると数式が入っていない最終行になってしまう
+' Retsu_for_Find_last_row:  値の入っている最終行を取得する。　もし、マイナスの値を指定した場合、Abs(Retsu_for_Find_last_row)行からチェックを開始する
 ' Check_row_cnt:    何行チェックするか。とりあえず多めにしとく
     Debug.Print "DEBUG  Start Function Check()-------------"
     Dim result As Boolean
@@ -425,7 +420,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     Check = 0
     
     sheet.Activate
-
+    
     Call CheckFormulaCells(sheet) ' 指定されたシートをスキャンし、数式が入っているセルで「セルの書式設定」の「表示項目」が文字列になっている場合に警告メッセージを表示
     '    MsgBox "Columns(Retsu_for_Find_last_row).Address　=     " & Columns(Retsu_for_Find_last_row).Address
 
@@ -433,14 +428,19 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
     '    StartL = sheet.Range("A:A").Find(What:="*", LookAt:=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1 ' この方法だと罫線も含んだ最終行になってしまう
     '    StartL = sheet.Cells(Rows.Count, Retsu_for_Find_last_row).End(xlUp).Row + 1
     '    StartL = sheet.Range(Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1 ' なぜか　シート「利用時間(User)」だけ、「オブジェクト変数またはWithブロック変数が設定されていません」のエラー  問題はここ　Columns(Retsu_for_Find_last_row).Address
-    StartL = sheet.Range(sheet.Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1    ' TEST
+    If Retsu_for_Find_last_row > 0 Then
+        StartL = sheet.Range(sheet.Columns(Retsu_for_Find_last_row).Address).Find(What:="*", LookIn:=xlValues, SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row + 1    ' TEST
+    Else
+        StartL = Abs(Retsu_for_Find_last_row)
+    End If
 
     sheet.Cells(StartL, arr(0)).Select
     MsgBox "シート「" & sheet.Name & "」のここから、この行に入っている数式が以降 " & Check_row_cnt & " 行に渡って入っているかチェックを始めます。", vbInformation
 
     For Each col In arr
+        Range(Cells(StartL, col), Cells(StartL + Check_row_cnt, col)).Interior.Color = RGB(0, 255, 0) ' 緑色
         For i = StartL + 1 To StartL + Check_row_cnt
-            sheet.Cells(i, col).Select
+            'sheet.Cells(i, col).Select
             'Sleep 20 ' msec
             result = CheckSameFormulaType(Cells(StartL, col), Cells(i, col))
             If result = True Then
@@ -448,6 +448,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
                 'Cells(i, col).Interior.Color = RGB(0, 255, 0)  '色付けると非常に時間が掛かる
             Else
                 Debug.Print "要確認！　セル(" & i & ", " & col & ") 数式が入っていないか、数式が異なる"
+                sheet.Cells(i, col).Select
                 Cells(i, col).Interior.Color = RGB(255, 0, 0)
                 Check = Check + 1
             End If
