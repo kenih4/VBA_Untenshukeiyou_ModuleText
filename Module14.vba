@@ -60,7 +60,13 @@ Sub Initial_Check(BL As Integer)
         result = CheckForErrors(ws)
     Next ws
     
-    
+'===============DEBUG
+
+    If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7), 3, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
+    'If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(9, 10, 11, 12, 13, 14, 15), 9, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
+    MsgBox "FINISH"
+    Exit Sub
+'===============
     If Check_exixt("運転予定時間", wb_SHUKEI) = True Then Cnt = Check(Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), 2, 30, wb_SHUKEI.Worksheets("運転予定時間"))
     If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(2, 3, 4, 5, 6, 7), 3, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
     If Check_exixt("GUN HV OFF時間記録", wb_SHUKEI) = True Then Cnt = Check(Array(9, 10, 11, 12, 13, 14, 15), 9, 30, wb_SHUKEI.Worksheets("GUN HV OFF時間記録"))
@@ -390,11 +396,10 @@ Function Check_exixt(sname As String, wb As Workbook) As Boolean
     If Not SheetExists(wb, sname) Then
         MsgBox "シートが存在しません。" & vbCrLf & sname & " 終了します。", Buttons:=vbCritical
     Else
+        Check_exixt = True
         If CheckStringInSheet(wb.Worksheets(sname), ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW)) Then
             wb.Worksheets(sname).Activate
             MsgBox "今から出力しようとしているユニットが既にシート上に存在しますけど、、、　確認して下さい。　 ", Buttons:=vbCritical
-        Else
-            Check_exixt = True
         End If
     End If
     
@@ -440,7 +445,7 @@ Function Check(arr As Variant, Retsu_for_Find_last_row As Integer, Check_row_cnt
             result = CheckSameFormulaType(Cells(StartL, col), Cells(i, col))
             If result = True Then
                 Debug.Print "OK:    セル(" & i & ", " & col & ") 数式有  " & Cells(i, col).Formula
-                'Cells(i, col).Interior.Color = RGB(0, 255, 0)  色付けると非常に時間が掛かる
+                'Cells(i, col).Interior.Color = RGB(0, 255, 0)  '色付けると非常に時間が掛かる
             Else
                 Debug.Print "要確認！　セル(" & i & ", " & col & ") 数式が入っていないか、数式が異なる"
                 Cells(i, col).Interior.Color = RGB(255, 0, 0)

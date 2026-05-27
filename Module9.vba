@@ -291,6 +291,8 @@ Sub ログノートをHTML出力と調整時間がログノートに記載されてるか確認_ユニット月(Ne
         Command = "cd /c/Users/kenic/Documents/operation_log_NEW" & ";" & _
                    "./excelgrep_by_XMLparse.sh SACLA/" & LogNOTE_to & " '$|引渡' '$|引き渡' '$|波長変更依頼' '$|ユニット' '$|利用終了' '$|運転終了'" & ";" & _
                    "read -p '処理が完了しました。Enterキーを押すと終了します...'"
+        Debug.Print "コマンドは以下です。"
+        Debug.Print Command
         ExecuteGitBashCommand Command
     End If
 

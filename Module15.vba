@@ -187,7 +187,7 @@ Sub 作成前のバックアップ取得()
 End Sub
 
 Sub 完了のバックアップ取得()
-    Call バックアップ取得("完了")
+    Call バックアップ取得("作成完了")
 End Sub
 
 Sub バックアップ取得(Comment As String)
@@ -201,6 +201,7 @@ Sub バックアップ取得(Comment As String)
     createdPath = CreateFolderWithAutoRename("\\saclaopr18.spring8.or.jp\ses-users\jkenichi\BU\集計のBK", ThisWorkbook.sheetS("手順").Range(UNITNAME & UNITROW) & "_" & Comment)
     If createdPath <> "" Then
 '        MsgBox "フォルダ作成成功：" & createdPath
+        result = CopyFileSafely(CPATH & "\計画時間.xlsx", createdPath & "\計画時間.xlsx")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転集計記録.xlsm", createdPath & "\SACLA運転集計記録.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL2.xlsm", createdPath & "\SACLA運転状況集計BL2.xlsm")
         result = CopyFileSafely(CPATH & WHICH & "\SACLA運転状況集計BL3.xlsm", createdPath & "\SACLA運転状況集計BL3.xlsm")
